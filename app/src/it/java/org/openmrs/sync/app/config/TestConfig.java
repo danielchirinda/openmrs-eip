@@ -1,5 +1,6 @@
 package org.openmrs.sync.app.config;
 
+import org.apache.camel.builder.DeadLetterChannelBuilder;
 import org.openmrs.sync.component.config.ReceiverEncryptionProperties;
 import org.openmrs.sync.component.config.SenderEncryptionProperties;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,7 +32,8 @@ import java.util.Map;
 @ComponentScan({
         "org.openmrs.sync.component.service",
         "org.openmrs.sync.component.mapper",
-        "org.openmrs.sync.component.camel"
+        "org.openmrs.sync.component.camel",
+        "org.openmrs.utils.odoo"
 })
 public class TestConfig {
 
@@ -43,7 +45,7 @@ public class TestConfig {
 
     @Bean
     @ConfigurationProperties(prefix = "spring.datasource")
-    public DataSource dataSource() {
+    public DataSource openmrsDataSource() {
         return DataSourceBuilder.create().build();
     }
 
@@ -77,5 +79,12 @@ public class TestConfig {
                 .persistenceUnit("openmrs")
                 .properties(props)
                 .build();
+    }
+
+    @Bean
+    public DeadLetterChannelBuilder deadLetterChannelBuilder() {
+        DeadLetterChannelBuilder builder = new DeadLetterChannelBuilder("direct:dlc");
+        builder.setUseOriginalMessage(true);
+        return builder;
     }
 }
