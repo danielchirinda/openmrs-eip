@@ -25,7 +25,9 @@ import lombok.EqualsAndHashCode;
 @Entity
 @Table(name = "users")
 @AttributeOverride(name = "id", column = @Column(name = "user_id"))
-public class User extends BaseCreatableEntity {
+@AttributeOverride(name = "name", column = @Column(name = "name", insertable = false, updatable = false))
+@AttributeOverride(name = "description", column = @Column(name = "description", insertable = false, updatable = false))
+public class User extends BaseChangeableMetaDataEntity{
 	
 	@NotNull
 	@Column(name = "system_id")
