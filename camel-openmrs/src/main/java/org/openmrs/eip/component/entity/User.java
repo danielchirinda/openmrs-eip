@@ -42,8 +42,8 @@ public class User extends BaseChangeableMetaDataEntity{
     @Column(name = "salt")
     private String salt;
 	 
-    @Column(name = "secret_question")
-    private String secretQuestion;
+    /*@Column(name = "secret_question")
+    private String secretQuestion;*/
 
     @NotNull
     @OneToOne
@@ -56,12 +56,12 @@ public class User extends BaseChangeableMetaDataEntity{
     @Column(name = "email")
     private String email;
     
-    @ManyToOne
+    /*@ManyToOne
     @JoinColumn(name = "changed_by")
     private UserLight changedBy;
 
     @Column(name = "date_changed")
-    private LocalDateTime dateChanged;
+    private LocalDateTime dateChanged;*/
 
     @ManyToOne
     @JoinColumn(name = "retired_by")
@@ -70,8 +70,8 @@ public class User extends BaseChangeableMetaDataEntity{
     @Column(name = "date_retired")
     private LocalDateTime dateRetired;
 
-    @Column(name = "retire_reason")
-    private String retireReason;
+    /*@Column(name = "retire_reason")
+    private String retireReason;*/
 
     @NotNull
     @Column(name = "retired")
