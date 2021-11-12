@@ -72,9 +72,17 @@
                 
                 <log message="Sending entity to sync destination: {{camel.output.endpoint}}" />
 
+                <script>
+                    <method beanType="org.openmrs.eip.component.utils.Utils" method="incrementSentUnconfirmed()" />
+                </script>
+
                 <toD uri="{{camel.output.endpoint}}" />
 
                 <log message="Entity sent!" />
+
+                <script>
+                    <method beanType="org.openmrs.eip.component.utils.Utils" method="incrementSentConfirmed()" />
+                </script>
             </when>
             <otherwise>
                 <!-- TODO Log to a special failures log file or DB -->

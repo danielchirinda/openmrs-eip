@@ -4,7 +4,8 @@ import java.time.LocalDateTime;
 
 /**
  * Encapsulates descriptive data about a sync payload i.e. the unique ID of the site sending the.
- * payload and the date it was sent.
+ * payload, the date it was sent and the total count of events the sender has sent to activeMQ since
+ * it was deployed including the event associated to this metadata object.
  */
 public class SyncMetadata {
 	
@@ -13,6 +14,9 @@ public class SyncMetadata {
 	private String operation;
 	
 	private LocalDateTime dateSent;
+	
+	//Count of confirmed messages sent to ActiveMQ
+	private Long sentCount;
 	
 	/**
 	 * Gets the sourceIdentifier
@@ -68,10 +72,28 @@ public class SyncMetadata {
 		this.dateSent = dateSent;
 	}
 	
+	/**
+	 * Gets the sentCount
+	 *
+	 * @return the sentCount
+	 */
+	public Long getSentCount() {
+		return sentCount;
+	}
+	
+	/**
+	 * Sets the sentCount
+	 *
+	 * @param sentCount the sentCount to set
+	 */
+	public void setSentCount(Long sentCount) {
+		this.sentCount = sentCount;
+	}
+	
 	@Override
 	public String toString() {
 		return getClass().getSimpleName() + "{sourceIdentifier=" + sourceIdentifier + ", operation=" + operation
-		        + ", dateSent=" + dateSent + "}";
+		        + ", dateSent=" + dateSent + ", sentCount=" + sentCount + "}";
 	}
 	
 }
