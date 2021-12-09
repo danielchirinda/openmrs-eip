@@ -15,7 +15,7 @@ public class ReceiverSyncStatus extends AbstractEntity {
 	public static final long serialVersionUID = 1;
 	
 	@OneToOne(cascade = CascadeType.ALL, optional = false)
-	@JoinColumn(name = "site_info_id")
+	@JoinColumn(name = "site_info_id", nullable = false, updatable = false, unique = true)
 	private SiteInfo siteInfo;
 	
 	@Column(name = "last_sync_date", nullable = false)
