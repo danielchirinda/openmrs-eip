@@ -49,7 +49,6 @@ public class SpringWebSecurityConfig extends WebSecurityConfigurerAdapter {
 			String h2UrlMapping = path + (path.endsWith("/") ? "**" : "/**");
 			http.authorizeRequests().antMatchers(h2UrlMapping).permitAll();
 			http.csrf().ignoringAntMatchers(h2UrlMapping);
-			
 			http.headers().frameOptions().sameOrigin();
 		}
 		
