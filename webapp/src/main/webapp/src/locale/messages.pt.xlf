@@ -320,5 +320,11 @@
 				<target>Site Origem</target>
 			</segment>
 		</unit>
+		<unit id="sync-details">
+			<segment>
+				<source>Details</source>
+				<target>Detalhes</target>
+			</segment>
+		</unit>
 	</file>
 </xliff>
