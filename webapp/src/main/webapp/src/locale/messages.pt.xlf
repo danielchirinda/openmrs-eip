@@ -320,5 +320,35 @@
 				<target>Site Origem</target>
 			</segment>
 		</unit>
+		<unit id="sync-details">
+			<segment>
+				<source>Details</source>
+				<target>Detalhes</target>
+			</segment>
+		</unit>
+		<unit id="common-dateChanged">
+			<segment>
+				<source>Date Changed</source>
+				<target>Data Actualização</target>
+			</segment>
+		</unit>
+		<unit id="common-status">
+			<segment>
+				<source>Status</source>
+				<target>Estado</target>
+			</segment>
+		</unit>
+		<unit id="common-dateReceived">
+			<segment>
+				<source>Date Received</source>
+				<target>Data Recebida</target>
+			</segment>
+		</unit>
+		<unit id="common-resend-message">
+			<segment>
+				<source>Are you sure you want to Resend the event to the central server?</source>
+				<target>Tem certeza de que deseja reenviar o evento para o servidor central?</target>
+			</segment>
+		</unit>
 	</file>
 </xliff>

@@ -25,4 +25,8 @@ export abstract class BaseService<T extends BaseEntity> {
 		return this.httpClient.delete<T>(environment.apiBaseUrl + resource + '/' + entity.id);
 	}
 
+	get(resource: string, entity: T): Observable<T> {
+		return this.httpClient.get<T>(environment.apiBaseUrl + resource);
+	}
+
 }

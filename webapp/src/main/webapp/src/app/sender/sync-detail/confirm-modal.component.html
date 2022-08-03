@@ -1,0 +1,71 @@
+<div class="modal-header">
+	<h4 class="modal-title" id="modal-title">
+		<span i18n="@@common-view-details">Details</span>
+	</h4>
+	<button type="button" class="btn-close" aria-describedby="modal-title"
+		(click)="modal.dismiss('Cross click')"></button>
+</div>
+<div class="container">
+
+	<div class="modal-body">
+		<p>
+			<strong i18n="@@common-resend-message">Are you sure you want to Resend the event to the central
+				server? </strong>
+		</p>
+
+		<table datatable class="table text-center">
+			<tr>
+				<th i18n="@@common-table-name">Table Name</th>
+				<td>{{ syncMessage?.tableName }}</td>
+			</tr>
+			<tr>
+				<th i18n="@@common-identifier">Identifier</th>
+				<td>{{ syncMessage?.identifier }}</td>
+			</tr>
+
+			<tr>
+				<th i18n="@@common-operation">Operation</th>
+				<td>
+					<span class="text-success" [hidden]="syncMessage?.operation != 'c'"
+						i18n="@@common-insert">Insert</span>
+					<span [hidden]="syncMessage?.operation != 'u'" i18n="@@common-update">Update</span>
+					<span class="text-danger" [hidden]="syncMessage?.operation != 'd'"
+						i18n="@@common-delete">Delete</span>
+				</td>
+			</tr>
+			<tr>
+				<th i18n="@@common-dateAdded">Date Created</th>
+				<td>
+					{{ syncMessage?.dateCreated }}
+				</td>
+			</tr>
+			<tr>
+				<th i18n="@@common-dateChanged">Date Changed</th>
+				<td>
+					{{ syncMessage?.dateChanged }}
+				</td>
+			</tr>
+
+			<tr>
+				<th i18n="@@common-dateReceived">Date Reiceved</th>
+				<td>
+					{{ syncMessage?.dateChanged }}
+				</td>
+			</tr>
+
+			<tr>
+				<th i18n="@@common-status">Status</th>
+				<td>{{ syncMessage?.status }}</td>
+			</tr>
+
+		</table>
+	</div>
+	<div class="modal-footer">
+		<button type="button" class="btn btn-outline-secondary" (click)="modal.dismiss('cancel click')">
+			Cancel
+		</button>
+		<button type="button" class="btn btn-success" (click)="resendEvent()">
+			Confirm
+		</button>
+	</div>
+</div>
