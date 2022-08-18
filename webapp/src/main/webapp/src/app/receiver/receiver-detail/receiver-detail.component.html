@@ -1,7 +1,6 @@
-
 <div>
 	<!--View sync message sent-->
-	<div *ngIf="isSyncMessageView" >
+	<div>
 		<h5><span class="badge badge-dark" i18n="@@common-total-count">Total Count</span>&nbsp;<span
 				class="badge border border-secondary">{{count}}</span></h5>
 		<div class="ui-bar-spacer">
@@ -11,11 +10,13 @@
 						<th i18n="@@common-table-name">Table Name</th>
 						<th i18n="@@common-identifier">Identifier</th>
 						<th i18n="@@common-operation">Operation</th>
-						<th i18n="@@common-dateAdded">Date Created</th>
-						<th i18n="@@common-dateChanged">Date Changed</th>
+						<th i18n="@@common-district">District</th>
+						<th i18n="@@common-health-facility">Health Facility</th>
+						<th i18n="@@common-hf-code">HF code</th>
+						<th i18n="@@common-dateCreated">Date Created</th>
+						<th i18n="@@common-dateChanged">Date Sent</th>
 						<th i18n="@@common-dateReceived">Date Reiceved</th>
 						<th i18n="@@common-status">Status</th>
-						<th i18n="@@common-action">Action</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -28,25 +29,24 @@
 							<span [hidden]="e.operation != 'u'" i18n="@@common-update">Update</span>
 							<span class="text-danger" [hidden]="e.operation != 'd'" i18n="@@common-delete">Delete</span>
 						</td>
-						<td>{{e.dateCreated | date:'yyyy-MM-dd HH:mm:ss.SSS'}}</td>
-						<td>{{e.dateChanged| date:'yyyy-MM-dd HH:mm:ss.SSS'}}</td>
-						<td>{{e.dateChanged| date:'yyyy-MM-dd HH:mm:ss.SSS'}}</td>
+						<td>{{e.district}}</td>
+						<td>{{e.healthFacility}}</td>
+						<td>{{e.healthFacilityCode}}</td>
+						<td>{{e.dateCreated | date:'yyyy-MM-dd'}}</td>
+						<td>{{e.dateSent| date:'yyyy-MM-dd'}}</td>
+						<td>{{e.dateReceived| date:'yyyy-MM-dd'}}</td>
+
 						<td>
-							<span [hidden]="e.status == 'SENT'" i18n="@@common-received">Sent</span>
-							<span [hidden]="e.status != 'RECEIVED'" i18n="@@common-processed">
-								Received</span>
-						</td>
-						<td>
-							<i class="bi bi-arrow-clockwise fa-xs hover-primary ui-cursor-pointer"
-								[ngbTooltip]="viewDetailsTemplate" [openDelay]="1000" (click)="open(e)"></i>
+							<span [hidden]="e.status == 'NEW'" i18n="@@common-received">Received</span>
+							<span [hidden]="e.status != 'NEW'" i18n="@@common-processed">
+								Processed</span>
+
 						</td>
 					</tr>
 				</tbody>
 			</table>
 		</div>
 	</div>
-
-	<!--View sync message sent-->
 </div>
 
 <!-- Templates -->

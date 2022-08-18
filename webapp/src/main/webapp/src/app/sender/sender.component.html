@@ -24,6 +24,13 @@
 				<sync-detail></sync-detail>
 			</ng-template>
 		</li>
+
+		<li ngbNavItem="sync-tables-status">
+			<a ngbNavLink i18n="@@sync-details">Status</a>
+			<ng-template ngbNavContent>
+				<app-table-status></app-table-status>
+			</ng-template>
+		</li>
 	</ul>
 	<div class="container mw-100 bg-white">
 		<div [ngbNavOutlet]="nav" class="mt-2 mb-3 tab-content-container"></div>

@@ -4,12 +4,13 @@ import {SharedModule} from "../shared/shared.module";
 import {StoreModule} from "@ngrx/store";
 import {senderErrorReducer} from "./error/state/error.reducer";
 import {SenderComponent} from './sender.component';
-import {TableStatsComponent} from "./stats/table-stats.component";
 import {SenderDashboardComponent} from "./dashboard/sender-dashboard.component";
 import {EbEventComponent} from "./event/db-event.component";
 import {dbEventReducer} from "./event/state/db-event.reducer";
 import { SyncDetailComponent } from './sync-detail/sync-detail.component';
 import { syncDetailReducer } from './sync-detail/state/sync-detail.reducer';
+import { TableSyncStatusComponent } from './sync-detail/table-sync-status/table-sync-status.component';
+import { TableStatsComponent } from './stats/table-stats.component';
 
 
 @NgModule({
@@ -19,7 +20,8 @@ import { syncDetailReducer } from './sync-detail/state/sync-detail.reducer';
 		SenderDashboardComponent,
 		TableStatsComponent,
 		EbEventComponent,
-		SyncDetailComponent
+		SyncDetailComponent,
+		TableSyncStatusComponent
 	],
 	imports: [
 		SharedModule,

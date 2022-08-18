@@ -6,7 +6,6 @@ import { BaseListingComponent } from 'src/app/shared/base-listing.component';
 import { NgbdModalConfirm } from './confirm-modal';
 import { SyncDetailLoaded } from './state/sync-detail.actions';
 import { GET_SYNC_DETAIL } from './state/sync-detail.reducer';
-import { SyncDetailStatus } from './status/sync-detail-status';
 import { SyncMessageStatus } from './status/sync-message-status';
 import { SyncDetail } from './sync-detail';
 import { SyncDetailService } from './sync-detail.service';
@@ -95,70 +94,10 @@ export class SyncDetailComponent extends BaseListingComponent implements OnInit 
 		this.service.getSyncStatusDetails().subscribe(countAndItems => {
 			console.log('loaded itens from database', countAndItems);
 			this.filteredSyncStatus = countAndItems.items;
-
-			console.log('TIPO DE DADO', typeof countAndItems);
-
-			//this.sortData(countAndItems);
-
-
-
-			// this.store.dispatch(new SyncDetailLoaded(countAndItems));
 		});
 
 
 		this.isSyncMessageView = false
 		this.isSyncMessageViewOverall = true
-	}
-
-
-	sortData(countAndItems: any) {
-
-		// Position 0 = count
-		// position 1 = status
-		// position 2 = tableName
-		countAndItems.forEach((statusObject: any) => {
-
-			/*
-			let existentStatus = this.syncStatus?.find((status , index?) => {
-				// Search by table Name
-				if(status?.tableName===statusObject[2]){
-					status.position = index
-					return status
-				}
-			})
-
-			if(existentStatus) {
-
-				if (statusObject[1]==='SENT') {
-					existentStatus.setItens = existentStatus.setItens + statusObject[0]
-
-				}
-				else if(statusObject[1]==='RECEIVED'){
-					existentStatus.receivedItens = existentStatus.receivedItens + statusObject[0]
-
-				}else {
-					existentStatus.nonReceivedItens = existentStatus.nonReceivedItens + statusObject[0]
-				}
-				//update value on syncStatus array
-				this.syncStatus?.find((statusToUpdate: SyncMessageStatus, index) => {
-					// Search by table Name
-					if(statusToUpdate.tableName===existentStatus?.tableName){
-						statusToUpdate.setItens = existentStatus?.setItens
-						statusToUpdate.nonReceivedItens = existentStatus?.nonReceivedItens
-						statusToUpdate.receivedItens = existentStatus?.receivedItens
-						return
-					}
-				})
-
-			}else{
-				// existentStatus?.nonReceivedItens = 0
-
-
-
-
-
-			}
-*/
-		});
 	}
 }

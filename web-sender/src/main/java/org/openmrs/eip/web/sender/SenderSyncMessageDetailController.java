@@ -5,8 +5,10 @@ import java.util.Map;
 import org.openmrs.eip.app.management.entity.SenderSyncMessageDetail;
 import org.openmrs.eip.web.RestConstants;
 import org.openmrs.eip.web.contoller.BaseRestController;
+import org.openmrs.eip.web.sender.services.SenderControllerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,6 +20,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class SenderSyncMessageDetailController extends BaseRestController {
 
 	private static final Logger log = LoggerFactory.getLogger(SenderSyncMessageDetailController.class);
+
+	@Autowired
+	private SenderControllerService senderControllerService;
 
 	@Override
 	public Class<?> getClazz() {
@@ -50,15 +55,18 @@ public class SenderSyncMessageDetailController extends BaseRestController {
 
 		SenderSyncMessageDetail syncMessage = (SenderSyncMessageDetail) doGet(id);
 
-		log.info("Founded message to resend with" + syncMessage.toString());
+		if (syncMessage != null) {
 
+			this.senderControllerService.sendItemToRetryQueue(syncMessage);
+
+		}
 		return syncMessage;
 	}
 
 	@GetMapping("/status")
 	public Map<String, Object> syncdDetails() {
 		if (log.isDebugEnabled()) {
-			log.debug("Fetching Sync Status: " );
+			log.debug("Fetching Sync Status: ");
 		}
 
 		return doCount();

@@ -18,6 +18,7 @@ import org.openmrs.eip.web.dto.SyncStatusDetailDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.ConfigurableEnvironment;
 
 public abstract class BaseRestController {
 
@@ -28,6 +29,8 @@ public abstract class BaseRestController {
 
 	@Autowired
 	protected CamelContext camelContext;
+	@Autowired
+	ConfigurableEnvironment env;
 
 	public Map<String, Object> doGetAll() {
 		Map<String, Object> results = new HashMap<String, Object>(2);
@@ -98,21 +101,20 @@ public abstract class BaseRestController {
 				});
 			} else {
 				SyncStatusDetailDTO syncStatusDetail = new SyncStatusDetailDTO();
-		 		syncStatusDetail.setTableName(sync.getTableName());
-		 		
-		 		
-		 		if (sync.getStatus().toString().equals(SyncStatusDetailDTO.RECEIVED)) {
-		 			syncStatusDetail.setReceivedItens(1);
+				syncStatusDetail.setTableName(sync.getTableName());
+
+				if (sync.getStatus().toString().equals(SyncStatusDetailDTO.RECEIVED)) {
+					syncStatusDetail.setReceivedItens(1);
 				}
-				
+
 				if (sync.getStatus().toString().equals(SyncStatusDetailDTO.SENT)) {
 					syncStatusDetail.setSetItens(1);
 				}
-				
+
 				if (sync.getStatus().toString().equals(SyncStatusDetailDTO.NEW)) {
 					syncStatusDetail.setNonReceivedItens(1);
 				}
-				
+
 				items.add(syncStatusDetail);
 			}
 
@@ -141,6 +143,24 @@ public abstract class BaseRestController {
 		 */
 		return results;
 	}
+
+	/*
+	 * public Long doGetByIdentifierAndTableName(String identifier, String
+	 * tableName) {
+	 * 
+	 * final String dbName = env.getProperty("openmrs.db.name");
+	 * 
+	 * return on(camelContext).to("jpa:" + tableName +
+	 * "?nativeQuery=SELECT p.uuid FROM " + dbName + "." + tableName +
+	 * " p WHERE p.identifier=" + "'" + identifier + "'").request(Long.class);
+	 * 
+	 * 
+	 * return producerTemplate.requestBody( "jpa:" + tableName +
+	 * "?query=SELECT p FROM " + tableName + " p WHERE p.identifier =" +
+	 * identifier);
+	 * 
+	 * }
+	 */
 
 	private SyncStatusDetailDTO findSyncDetailByTableName(String tableName, List<SyncStatusDetailDTO> details) {
 

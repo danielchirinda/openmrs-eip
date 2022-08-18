@@ -1154,5 +1154,55 @@
 
         <modifyDataType tableName="receiver_sync_msg" columnName="date_created" newDataType="DATETIME(3)" />
     </changeSet>
+    
+    
+    
+    <!-- Here -->
+        <changeSet author="dchirinda" id="20220707-1504">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="receiver_sync_detail" />
+            </not>
+        </preConditions>
+        <comment>Adding receiver_sync_detail table</comment>
+
+        <createTable tableName="receiver_sync_detail">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" />
+            </column>
+            <column name="table_name" type="VARCHAR(100)">
+                <constraints nullable="false" />
+            </column>
+            <column name="identifier" type="VARCHAR(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="operation" type="VARCHAR(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="district" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="health_facility" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="health_facility_code" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_created" type="DATETIME(3)">
+                <constraints nullable="false" />
+            </column>
+                        
+            <column name="date_sent" type="DATETIME(3)" />
+            
+            <column name="date_received" type="DATETIME(3)" />
+            
+            <column name="status" type="VARCHAR(50)">
+                <constraints nullable="false" />
+            </column>
+            <column name="message_uuid" type="VARCHAR(38)" />
+        </createTable>
+
+    </changeSet>
+    <!-- Here -->
 
 </databaseChangeLog>
