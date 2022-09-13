@@ -12,11 +12,19 @@ export class NgbdModalConfirm implements OnInit  {
 
 	public syncMessage!: SyncMessageEvent;
 
+	message!: String;
+
 	constructor(public modal: NgbActiveModal,
 		private service: SyncDetailService) {}
 
 	ngOnInit():void {
 		this.syncMessage = this.syncMessageEvent
+
+		if (this.syncMessage.status == 'RECEIVED') {
+			this.message = 'Item Already send And received by central server. '
+		} else {
+			this.message = 'Are you sure you want to Resend the event to the central server?';
+		}
 	}
 
 	resendEvent() {

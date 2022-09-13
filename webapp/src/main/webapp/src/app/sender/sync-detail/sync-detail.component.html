@@ -1,13 +1,38 @@
+<div class="mt-4 mb-3">
+	<div class="row container">
+		<div class="col-md-6 mr-0">
+			<p class="h5"><strong><span>Sync Details Search Data</span></strong></p>
+		</div>
+
+	</div>
+	<div class="row container">
+		<div class="col-md-3">
+			<span i18n="@@common-start">Stard Date</span> - <span>{{startDate ? startDate : 'None'}}</span>
+		</div>
+		<div class="col-md-1">
+			<span><i class="bi bi-arrow-right"></i></span>
+		</div>
+		<div class="col-md-3">
+			<span i18n="@@common-end">End Date</span> - <span>{{endDate ? endDate : 'None'}}</span>
+		</div>
+
+	</div>
+</div>
+
 
 <div>
 	<!--View sync message sent-->
-	<div *ngIf="isSyncMessageView" >
+	<div>
 		<h5><span class="badge badge-dark" i18n="@@common-total-count">Total Count</span>&nbsp;<span
 				class="badge border border-secondary">{{count}}</span></h5>
 		<div class="ui-bar-spacer">
 			<table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-striped text-center">
 				<thead>
 					<tr>
+						<th>
+							<input type="checkbox" [(ngModel)]="masterSelected" (change)="checkUncheckAll($event)"
+								name="list_name" value="-1" />
+						</th>
 						<th i18n="@@common-table-name">Table Name</th>
 						<th i18n="@@common-identifier">Identifier</th>
 						<th i18n="@@common-operation">Operation</th>
@@ -15,11 +40,12 @@
 						<th i18n="@@common-dateChanged">Date Changed</th>
 						<th i18n="@@common-dateReceived">Date Reiceved</th>
 						<th i18n="@@common-status">Status</th>
-						<th i18n="@@common-action">Action</th>
 					</tr>
 				</thead>
 				<tbody>
-					<tr *ngFor="let e of events">
+					<tr *ngFor="let e of events;">
+						<td><input type="checkbox" [checked]="e?.checked" value="e" (change)="isSelected(e,$event)">
+						</td>
 						<td>{{e.tableName}}</td>
 						<td>{{e.identifier}}</td>
 						<td>
@@ -32,17 +58,29 @@
 						<td>{{e.dateChanged| date:'yyyy-MM-dd HH:mm:ss.SSS'}}</td>
 						<td>{{e.dateChanged| date:'yyyy-MM-dd HH:mm:ss.SSS'}}</td>
 						<td>
-							<span [hidden]="e.status == 'SENT'" i18n="@@common-received">Sent</span>
-							<span [hidden]="e.status != 'RECEIVED'" i18n="@@common-processed">
+							<span [hidden]="e.status != 'SENT'" i18n="@@common-sent">Sent</span>
+							<span [hidden]="e.status != 'RECEIVED'" i18n="@@common-received">
 								Received</span>
-						</td>
-						<td>
-							<i class="bi bi-arrow-clockwise fa-xs hover-primary ui-cursor-pointer"
-								[ngbTooltip]="viewDetailsTemplate" [openDelay]="1000" (click)="open(e)"></i>
+							<span [hidden]="e.status != 'NEW'" i18n="@@common-new">
+								New</span>
+
 						</td>
 					</tr>
 				</tbody>
 			</table>
+			<div class="mt-2">
+				<div class="row container">
+					<div class="col-md-3">
+						<button class="btn btn-secondary" (click)="resendSelectedEvent()"> <span i18n="@@common-resend">
+								Resend selected Event</span></button>
+					</div>
+					<div class="col-md-2">
+						<button class="btn btn-secondary" (click)="back()"> <i class="bi bi-arrow-left-short"></i> <span i18n="@@common-resend">
+								 Back</span></button>
+					</div>
+				</div>
+			</div>
+
 		</div>
 	</div>
 

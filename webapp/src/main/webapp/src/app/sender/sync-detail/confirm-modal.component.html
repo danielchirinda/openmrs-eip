@@ -8,11 +8,12 @@
 <div class="container">
 
 	<div class="modal-body">
-		<p>
-			<strong i18n="@@common-resend-message">Are you sure you want to Resend the event to the central
-				server? </strong>
-		</p>
 
+		<div>
+			<P>
+				<strong i18n="@@common-resend-message">{{message}}</strong>
+			</P>
+		</div>
 		<table datatable class="table text-center">
 			<tr>
 				<th i18n="@@common-table-name">Table Name</th>
@@ -64,8 +65,12 @@
 		<button type="button" class="btn btn-outline-secondary" (click)="modal.dismiss('cancel click')">
 			Cancel
 		</button>
-		<button type="button" class="btn btn-success" (click)="resendEvent()">
-			Confirm
-		</button>
+		<span [hidden]="syncMessage?.status == 'RECEIVED'">
+			<button  type="button" class="btn btn-success"
+				(click)="resendEvent()">
+				Confirm
+			</button>
+		</span>
+
 	</div>
 </div>

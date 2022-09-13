@@ -29,4 +29,12 @@ export abstract class BaseService<T extends BaseEntity> {
 		return this.httpClient.get<T>(environment.apiBaseUrl + resource);
 	}
 
+	postCountAndItems(resource: string, data: any): Observable<BaseCountAndItems<T>> {
+		return this.httpClient.post<BaseCountAndItems<T>>(environment.apiBaseUrl + resource, data);
+	}
+
+	updateMultiple(resource: string, entity:any): Observable<T> {
+		return this.httpClient.patch<T>(environment.apiBaseUrl + resource , entity);
+	}
+
 }

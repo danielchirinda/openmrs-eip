@@ -350,5 +350,29 @@
 				<target>Tem certeza de que deseja reenviar o evento para o servidor central?</target>
 			</segment>
 		</unit>
+		<unit id="common-search-period">
+			<segment>
+				<source>Seach by period</source>
+				<target>Pesquisar por periodo</target>
+			</segment>
+		</unit>
+		<unit id="common-resend">
+			<segment>
+				<source>Resend selected Event</source>
+				<target>Reenviar eventos selecionados</target>
+			</segment>
+		</unit>
+		<unit id="common-start">
+			<segment>
+				<source>Start Time</source>
+				<target>Data Inicio</target>
+			</segment>
+		</unit>
+		<unit id="common-end">
+			<segment>
+				<source>Start Time</source>
+				<target>Data Fim</target>
+			</segment>
+		</unit>
 	</file>
 </xliff>

@@ -5,6 +5,8 @@ import java.util.Map;
 import org.openmrs.eip.app.management.entity.SenderSyncMessageDetail;
 import org.openmrs.eip.web.RestConstants;
 import org.openmrs.eip.web.contoller.BaseRestController;
+import org.openmrs.eip.web.dto.SenderSearchDTO;
+import org.openmrs.eip.web.sender.dto.SyncMessageIdDTO;
 import org.openmrs.eip.web.sender.services.SenderControllerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -47,20 +51,22 @@ public class SenderSyncMessageDetailController extends BaseRestController {
 		return doGet(id);
 	}
 
-	@PatchMapping("/{id}")
-	public Object resendEvent(@PathVariable("id") Integer id) {
+	@PatchMapping("/resend")
+	public void resendEvent(@RequestBody SyncMessageIdDTO syncMessage) {
 		if (log.isDebugEnabled()) {
-			log.debug("Resend Sync Message with id: " + id);
+			log.debug("Resend Sync Message List with size : " + syncMessage.getSyncMessages());
 		}
 
-		SenderSyncMessageDetail syncMessage = (SenderSyncMessageDetail) doGet(id);
+		for (Integer id : syncMessage.getSyncMessages()) {
+			SenderSyncMessageDetail message = (SenderSyncMessageDetail) doGet(id);
 
-		if (syncMessage != null) {
+			if (message != null) {
 
-			this.senderControllerService.sendItemToRetryQueue(syncMessage);
+				this.senderControllerService.sendItemToRetryQueue(message);
 
+			}
 		}
-		return syncMessage;
+
 	}
 
 	@GetMapping("/status")
@@ -70,6 +76,24 @@ public class SenderSyncMessageDetailController extends BaseRestController {
 		}
 
 		return doCount();
+	}
+	
+	@PostMapping("/sync-event")
+	public Map<String, Object> syncEventByDate(@RequestBody SenderSearchDTO search) {
+		if (log.isDebugEnabled()) {
+			log.debug("Fetching Sync Status: ");
+		}
+
+		return getEventByDate(search);
+	}
+
+	@PostMapping("/sync-history")
+	public Map<String, Object> syncHistoryByDate(@RequestBody SenderSearchDTO search) {
+		if (log.isDebugEnabled()) {
+			log.debug("Fetching Sync Status: ");
+		}
+
+		return getSyncHistoryByDate(search.getStartDate(), search.getEndDate());
 	}
 
 }

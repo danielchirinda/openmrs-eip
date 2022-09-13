@@ -5,7 +5,6 @@ import static org.openmrs.eip.web.RestConstants.DEFAULT_MAX_COUNT;
 import static org.openmrs.eip.web.RestConstants.FIELD_COUNT;
 import static org.openmrs.eip.web.RestConstants.FIELD_ITEMS;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -13,12 +12,13 @@ import java.util.Map;
 
 import org.apache.camel.CamelContext;
 import org.apache.camel.ProducerTemplate;
-import org.openmrs.eip.app.management.entity.SenderSyncMessageDetail;
-import org.openmrs.eip.web.dto.SyncStatusDetailDTO;
+import org.openmrs.eip.app.management.repository.SenderSyncMessageHistoryRepository;
+import org.openmrs.eip.app.management.service.SenderSyncMessageService;
+import org.openmrs.eip.app.utils.CountDTO;
+import org.openmrs.eip.web.dto.SenderSearchDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.ConfigurableEnvironment;
 
 public abstract class BaseRestController {
 
@@ -29,8 +29,9 @@ public abstract class BaseRestController {
 
 	@Autowired
 	protected CamelContext camelContext;
+
 	@Autowired
-	ConfigurableEnvironment env;
+	private SenderSyncMessageService senderSyncMessageService;
 
 	public Map<String, Object> doGetAll() {
 		Map<String, Object> results = new HashMap<String, Object>(2);
@@ -64,114 +65,58 @@ public abstract class BaseRestController {
 	/**
 	 * Count
 	 * 
-	 * @param <CountDTO>
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
 	public Map<String, Object> doCount() {
 
 		Map<String, Object> results = new HashMap<String, Object>(2);
 
-		List<SenderSyncMessageDetail> messageItens = on(camelContext).to(
-				"jpa:" + getName() + "?query=SELECT s" + " FROM " + getName() + " s order by " + " s.tableName asc ")
-				.request(List.class);
+		List<CountDTO> messageItensObjects = senderSyncMessageService.fetchSyncHistory();
 
-		results.put(FIELD_COUNT, messageItens.size());
+		results.put(FIELD_COUNT, messageItensObjects.size());
+		results.put(FIELD_ITEMS, messageItensObjects);
 
-		List<SyncStatusDetailDTO> items = new ArrayList<>();
-
-		messageItens.forEach((sync) -> {
-
-			SyncStatusDetailDTO dto = this.findSyncDetailByTableName(sync.getTableName(), items);
-			if (dto != null) {
-				items.forEach((item) -> {
-
-					if (item.getTableName().equals(sync.getTableName())) {
-						if (sync.getStatus().toString().equals(SyncStatusDetailDTO.RECEIVED)) {
-							item.setReceivedItens(item.getReceivedItens() + 1);
-
-						} else if (sync.getStatus().toString().equals(SyncStatusDetailDTO.SENT)) {
-							item.setSetItens(item.getSetItens() + 1);
-
-						} else if (sync.getStatus().toString().equals(SyncStatusDetailDTO.NEW)) {
-							item.setNonReceivedItens(item.getNonReceivedItens() + 1);
-						}
-
-					}
-				});
-			} else {
-				SyncStatusDetailDTO syncStatusDetail = new SyncStatusDetailDTO();
-				syncStatusDetail.setTableName(sync.getTableName());
-
-				if (sync.getStatus().toString().equals(SyncStatusDetailDTO.RECEIVED)) {
-					syncStatusDetail.setReceivedItens(1);
-				}
-
-				if (sync.getStatus().toString().equals(SyncStatusDetailDTO.SENT)) {
-					syncStatusDetail.setSetItens(1);
-				}
-
-				if (sync.getStatus().toString().equals(SyncStatusDetailDTO.NEW)) {
-					syncStatusDetail.setNonReceivedItens(1);
-				}
-
-				items.add(syncStatusDetail);
-			}
-
-		});
-		results.put(FIELD_ITEMS, items);
-
-		/*
-		 * List<CountDTO> receivedItens = on(camelContext).toF("jpa:" + getName() +
-		 * "?query=SELECT count(*), s.status, s.tableName " + " FROM " + getName() +
-		 * " s " +
-		 * " where s.status='RECEIVED' group by s.tableName having count(*) >= 1 order by "
-		 * + " s.tableName desc ") .request(List.class);
-		 * 
-		 * List<CountDTO> nonReceivedItens = on(camelContext).to("jpa:" + getName() +
-		 * "?query=SELECT count(*), s.status, s.tableName " + " FROM " + getName() +
-		 * " s " +
-		 * " where s.status='NEW' group by s.tableName having count(*) >= 1 order by " +
-		 * " s.tableName desc ") .request(List.class);
-		 */
-
-		/*
-		 * for (SenderSyncMessageDetail countDTO : SentItens) {
-		 * System.out.println("COunt DTO VALUE" + countDTO.getTableName()); }
-		 * List<CountDTO> itens = new ArrayList<CountDTO>(); //itens.addAll(SentItens);
-		 * //itens.addAll(receivedItens); //itens.addAll(nonReceivedItens);
-		 */
 		return results;
 	}
 
-	/*
-	 * public Long doGetByIdentifierAndTableName(String identifier, String
-	 * tableName) {
+	/**
 	 * 
-	 * final String dbName = env.getProperty("openmrs.db.name");
-	 * 
-	 * return on(camelContext).to("jpa:" + tableName +
-	 * "?nativeQuery=SELECT p.uuid FROM " + dbName + "." + tableName +
-	 * " p WHERE p.identifier=" + "'" + identifier + "'").request(Long.class);
-	 * 
-	 * 
-	 * return producerTemplate.requestBody( "jpa:" + tableName +
-	 * "?query=SELECT p FROM " + tableName + " p WHERE p.identifier =" +
-	 * identifier);
-	 * 
-	 * }
+	 * @return
 	 */
+	public Map<String, Object> getSyncHistoryByDate(String startDate, String endDate) {
 
-	private SyncStatusDetailDTO findSyncDetailByTableName(String tableName, List<SyncStatusDetailDTO> details) {
+		Map<String, Object> results = new HashMap<String, Object>(2);
 
-		for (SyncStatusDetailDTO syncStatusDetailDTO : details) {
-			if (syncStatusDetailDTO.getTableName().equals(tableName)) {
-				return syncStatusDetailDTO;
-			}
+		List<CountDTO> messageItensObjects = senderSyncMessageService.fetchSyncHistoryByDate(startDate, endDate);
+
+		results.put(FIELD_COUNT, messageItensObjects.size());
+		results.put(FIELD_ITEMS, messageItensObjects);
+
+		return results;
+	}
+
+	public Map<String, Object> getEventByDate(SenderSearchDTO search) {
+
+		Map<String, Object> results = new HashMap<String, Object>(2);
+		List<Object> items;
+
+		if (search.getStartDate().isBlank() || search.getEndDate().isBlank()) {
+			items = on(camelContext).to("jpa:" + getName() + "?query=SELECT c FROM " + getName()
+					+ " c  where c.tableName='"+search.getTableName() + "' &maximumResults=" + DEFAULT_MAX_COUNT).request(List.class);
+		} else {
+			items = on(camelContext).to("jpa:" + getName() + "?query=SELECT c FROM " + getName()
+					+ " c  where c.tableName='" + search.getTableName()+ "' and c.dateCreated > '" + search.getStartDate() + "' and c.dateCreated < '"
+					+ search.getEndDate() + "' &maximumResults=" + DEFAULT_MAX_COUNT).request(List.class);
 		}
 
-		return null;
+		if (items.size() > 0) {
+			results.put(FIELD_COUNT, items.size());
+			results.put(FIELD_ITEMS, items);
+		} else {
+			results.put(FIELD_ITEMS, Collections.emptyList());
+		}
 
+		return results;
 	}
 
 	public String getName() {

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { NgbModal, NgbModalOptions, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
@@ -10,6 +10,10 @@ import { SyncMessageStatus } from './status/sync-message-status';
 import { SyncDetail } from './sync-detail';
 import { SyncDetailService } from './sync-detail.service';
 import { SyncMessageEvent } from './sync-message-event';
+import { SearchEvent } from './search-event';
+import { ResendMessage } from './resend-message-id';
+import { Location } from '@angular/common';
+
 
 
 @Component({
@@ -17,6 +21,12 @@ import { SyncMessageEvent } from './sync-message-event';
 	templateUrl: './sync-detail.component.html'
 })
 export class SyncDetailComponent extends BaseListingComponent implements OnInit {
+
+	@Input() tableName : any
+
+	@Input() startDate : any
+
+	@Input() endDate : any
 
 	count?: number;
 
@@ -36,32 +46,50 @@ export class SyncDetailComponent extends BaseListingComponent implements OnInit 
 
 	syncStatus?: SyncMessageStatus[];
 
+	masterSelected?: boolean = false
+
+	selectedEvents = new Map();
+
+	resendMessage: ResendMessage = new ResendMessage;
+
+	searchEvent: SearchEvent = new SearchEvent;
 
 	constructor(
 		private service: SyncDetailService,
 		private store: Store,
-		private modalService: NgbModal
+		private modalService: NgbModal,
 	) {
 		super();
 	}
 
 	ngOnInit(): void {
-		this.init();
+		console.log('this is event emitted', this.tableName)
+		console.log('search data', this.startDate)
+		console.log('search data', this.endDate)
+		this.searchEvent.startDate=this.startDate
+		this.searchEvent.endDate=this.endDate
+		this.searchEvent.tableName=this.tableName
+		this.masterSelected = false
+
+		this.dtOptions = {
+			pagingType: 'full_numbers',
+			deferLoading: 12,
+			searching: true,
+		};
 		this.loadedSubscription = this.store.pipe(select(GET_SYNC_DETAIL)).subscribe(
 			countAndItems => {
 				this.count = countAndItems?.count;
 				this.events = countAndItems?.items;
+
 				this.reRender();
 			}
 		);
 
 		this.loadDetails();
-
 	}
 
 	loadDetails(): void {
-		this.service.getEventCountAndItems().subscribe(countAndItems => {
-			console.log('loaded itens from database', countAndItems)
+		this.service.getSyncEventByDate(this.searchEvent).subscribe(countAndItems => {
 			this.store.dispatch(new SyncDetailLoaded(countAndItems));
 		});
 	}
@@ -89,15 +117,64 @@ export class SyncDetailComponent extends BaseListingComponent implements OnInit 
 
 	}
 
-	openOverall() {
+	checkUncheckAll(event: any) {
+		const isChecked = event.target.checked
+		let newEvent: SyncMessageEvent[] = [];
 
-		this.service.getSyncStatusDetails().subscribe(countAndItems => {
-			console.log('loaded itens from database', countAndItems);
-			this.filteredSyncStatus = countAndItems.items;
-		});
+		this.events?.forEach(currentEvent => {
+			newEvent.push({
+				dateChanged: currentEvent.dateChanged,
+				dateCreated: currentEvent.dateCreated,
+				dateReceived: currentEvent.dateReceived,
+				checked: isChecked,
+				identifier: currentEvent.identifier,
+				messageUuid: currentEvent.messageUuid,
+				operation: currentEvent.operation,
+				primaryKeyId: currentEvent.primaryKeyId,
+				snapshot: currentEvent.snapshot,
+				status: currentEvent.status,
+				tableName: currentEvent.tableName,
+				id: currentEvent.id
 
+			})
+			if (isChecked) {
+				this.selectedEvents.set(currentEvent.messageUuid, currentEvent);
+			} else {
+				this.selectedEvents.delete(currentEvent.messageUuid)
+			}
+		})
 
-		this.isSyncMessageView = false
-		this.isSyncMessageViewOverall = true
+		this.masterSelected = true;
+		this.events = newEvent;
+		this.reRender()
+
+	}
+
+	isSelected(syncMessage: SyncMessageEvent ,event: any) {
+		const isChecked = event.target.checked
+		this.masterSelected = false
+
+		if (isChecked) {
+			this.selectedEvents.set(syncMessage.messageUuid, syncMessage);
+		} else {
+			this.selectedEvents.delete(syncMessage.messageUuid);
+		}
+	}
+
+	 resendSelectedEvent() {
+		this.selectedEvents.forEach((value,key) =>{
+			this.resendMessage.syncMessages?.push(value.id);
+		})
+
+		  this.service.resendMultipleEvent(this.resendMessage).subscribe((message) =>{
+		},
+		error => {
+			console.log('Error message', error)
+		}
+		);
+		this.loadDetails();
+	}
+	back(){
+		window.location.reload();
 	}
 }

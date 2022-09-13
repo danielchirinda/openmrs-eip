@@ -4,7 +4,10 @@
         <from uri="direct:out-bound-db-sync" />
 
         <log message="Start db-sync-route: ${body}" loggingLevel="DEBUG" />
-        
+            <setProperty name="messageUuid">
+               <spel>#{T(java.util.UUID).randomUUID().toString()}</spel>
+           </setProperty>
+           
         <setBody>
             <spel>#{new org.openmrs.eip.app.management.entity.SenderSyncMessage()}</spel>
         </setBody>
@@ -15,16 +18,39 @@
                 #{body.setOperation(getProperty('event').operation)}
                 #{body.setSnapshot(getProperty('event').snapshot)}
                 #{body.setDateCreated(new java.util.Date())}
-                #{body.setMessageUuid(T(java.util.UUID).randomUUID().toString())}
+                #{body.setMessageUuid(getProperty('messageUuid'))}
                 #{body.setRequestUuid(getProperty('event').requestUuid)}
             </spel>
         </script>
+        
+        <log message="Saving sender sync message: ${body}" loggingLevel="INFO" />
         
         <log message="Saving sender sync message: ${body}" loggingLevel="DEBUG" />
 
         <to uri="jpa:SenderSyncMessage?usePersist=true" />
 
         <log message="Sender sync message saved" loggingLevel="DEBUG" />
+        
+        <setBody>
+            <spel>#{new org.openmrs.eip.app.management.entity.SenderSyncMessageDetail()}</spel>
+        </setBody>
+        <script>
+            <spel>
+                #{body.setTableName(getProperty('event').tableName)}
+                #{body.setIdentifier(getProperty('event').identifier)}
+                #{body.setOperation(getProperty('event').operation)}
+                #{body.setSnapshot(getProperty('event').snapshot)}
+                #{body.setDateCreated(new java.util.Date())}
+                #{body.setMessageUuid(getProperty('messageUuid'))}
+                #{body.setRequestUuid(getProperty('event').requestUuid)}
+            </spel>
+        </script>
+        
+        <log message="Saving sender sync message detail: ${body}" loggingLevel="DEBUG" />
+
+        <to uri="jpa:SenderSyncMessageDetail?usePersist=true" />
+
+        <log message="Sender sync message Detail saved" loggingLevel="DEBUG" />
         
         <log message="End db-sync-route" loggingLevel="DEBUG" />
 

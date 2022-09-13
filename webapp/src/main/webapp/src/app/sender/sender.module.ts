@@ -11,6 +11,8 @@ import { SyncDetailComponent } from './sync-detail/sync-detail.component';
 import { syncDetailReducer } from './sync-detail/state/sync-detail.reducer';
 import { TableSyncStatusComponent } from './sync-detail/table-sync-status/table-sync-status.component';
 import { TableStatsComponent } from './stats/table-stats.component';
+import { FormsModule } from '@angular/forms';
+import { syncHistoryReducer } from './sync-detail/table-sync-status/state/sync-history.reducer';
 
 
 @NgModule({
@@ -27,7 +29,9 @@ import { TableStatsComponent } from './stats/table-stats.component';
 		SharedModule,
 		StoreModule.forFeature('senderErrorQueue', senderErrorReducer),
 		StoreModule.forFeature('eventQueue', dbEventReducer),
-		StoreModule.forFeature('syncDetailQueue', syncDetailReducer )
+		StoreModule.forFeature('syncDetailQueue', syncDetailReducer ),
+		StoreModule.forFeature('syncHistoryQueue', syncHistoryReducer ),
+		FormsModule,
 	], exports: [SenderComponent]
 })
 

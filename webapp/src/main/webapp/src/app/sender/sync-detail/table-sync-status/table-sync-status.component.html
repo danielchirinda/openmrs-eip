@@ -1,27 +1,63 @@
 <!--View sync message overall status-->
-<div >
-	<h5><span class="badge badge-dark" i18n="@@common-total-count">Total Count</span>&nbsp;<span
-			class="badge border border-secondary">{{count}}</span></h5>;
-	<div class="ui-bar-spacer">
-		<table datatable [dtOptions]="dtOptions" class="table table-striped text-center">
-			<thead>
-				<tr>
-					<th i18n="@@common-table-name">Table Name</th>
-					<th i18n="@@common-identifier">Sent Itens</th>
-					<th i18n="@@common-operation">Received Items</th>
-					<th i18n="@@common-dateAdded">Non Received</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr *ngFor="let e of filteredSyncStatus">
-					<td>{{e.tableName}}</td>
-					<td>{{e.setItens}}</td>
-					<td>{{e.receivedItens}}</td>
-					<td>{{e.nonReceivedItens}}</td>
-				</tr>
-			</tbody>
-		</table>
+<div *ngIf="!openSyncDetails">
+	<div class="row">
+		<div class="col-md-6">
+
+		</div>
+
+		<div class="col-md-6">
+
+			<div>
+				<table style="left: 0;">
+					<tr>
+						<td></td>
+						<td colspan="4"></td>
+						<td colspan="2" i18n="@@common-start">Start Date</td>
+						<td></td>
+						<td i18n="@@common-end">End Date </td>
+						<td> </td>
+					</tr>
+
+					<tr>
+						<td>
+							<button class="btn btn-secondary" (click)="searchByPeriod($event)"> <span
+									i18n="@@common-search-period">Search by Period</span></button>
+						</td>
+						<td colspan="4"></td>
+						<td colspan="2">
+							<input type="date" [(ngModel)]="searchEvent.startDate" />
+						</td>
+						<td></td>
+						<td>
+							<input type="date" [(ngModel)]="searchEvent.endDate" />
+						</td>
+
+					</tr>
+
+				</table>
+			</div>
+		</div>
+	</div>
+
+	<div>
+		<h5><span class="badge badge-dark" i18n="@@common-total-count">Total Count</span>&nbsp;<span
+				class="badge border border-secondary">{{count}}</span></h5>
+		<div class="ui-bar-spacer">
+			<table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-striped text-center">
+			</table>
+
+		</div>
 	</div>
 </div>
+
+<div *ngIf="openSyncDetails">
+	<sync-detail
+		tableName={{selectEventHistory?.tableName}}
+		startDate={{searchEvent.startDate}}
+		endDate={{searchEvent.endDate}}
+		>
+	</sync-detail>
+</div>
+
 
 <!--View sync message overall status-->

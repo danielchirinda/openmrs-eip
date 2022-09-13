@@ -1,3 +1,5 @@
+import { SearchEvent } from "../search-event";
+
 export class SyncMessageStatus {
 
 	primaryKeyId?: any;
@@ -6,10 +8,9 @@ export class SyncMessageStatus {
 
 	tableName?: string;
 
-	setItens?: number;
+	sentItens?: number;
 
 	nonReceivedItens?: number;
 
 	position?: any;
-
 }
