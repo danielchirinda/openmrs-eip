@@ -36,30 +36,30 @@
 
 							<log loggingLevel="INFO" message="Successfully removed Sender sync message(s) with uuid ${exchangeProperty.syncResponse.messageUuid}" />
 
-							<!-- Update SenderSyncMessageDetail to Received -->
+							<!-- Update SenderSyncMessageHistory to Received -->
 							<toD
-								uri="jpa:SenderSyncMessageDetail?query=SELECT detail FROM SenderSyncMessageDetail detail WHERE detail.messageUuid='${exchangeProperty.syncResponse.messageUuid}'" />
+								uri="jpa:SenderSyncMessageHistory?query=SELECT detail FROM SenderSyncMessageHistory detail WHERE detail.messageUuid='${exchangeProperty.syncResponse.messageUuid}'" />
 							<choice>
 								<when>
 									<simple>${body.size()} > 0</simple>
-									<setProperty name="senderSyncMessageDetail">
+									<setProperty name="senderSyncMessageHistory">
 										<simple>${body[0]}</simple>
 									</setProperty>
 
 									<script>
 										<spel>
-											#{getProperty('senderSyncMessageDetail').markAsReceived(getProperty('syncResponse'))}
+											#{getProperty('senderSyncMessageHistory').markAsReceived(getProperty('syncResponse'))}
 										</spel>
 									</script>
 
 									<setBody>
-										<simple>${exchangeProperty.senderSyncMessageDetail}</simple>
+										<simple>${exchangeProperty.senderSyncMessageHistory}</simple>
 									</setBody>
-									<to uri="jpa:SenderSyncMessageDetail" />
+									<to uri="jpa:SenderSyncMessageHistory" />
 								</when>
 							</choice>
 
-							<!-- Update SenderSyncMessageDetail to Received -->
+							<!-- Update SenderSyncMessageHistory to Received -->
 						</when>
 						<otherwise>
 							<log loggingLevel="INFO" message="No Sender sync message was found with uuid ${exchangeProperty.syncResponse.messageUuid}" />

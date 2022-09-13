@@ -15,8 +15,8 @@ import javax.validation.constraints.NotNull;
 import org.openmrs.eip.component.utils.DateUtils;
 
 @Entity
-@Table(name = "sender_sync_message_detail")
-public class SenderSyncMessageDetail extends AbstractEntity {
+@Table(name = "sender_sync_message_history")
+public class SenderSyncMessageHistory extends AbstractEntity {
 
 	private static final long serialVersionUID = 1L;
 
@@ -157,7 +157,7 @@ public class SenderSyncMessageDetail extends AbstractEntity {
 
 	@Override
 	public String toString() {
-		return "SenderSyncMessageDetail [tableName=" + tableName + ", identifier=" + identifier + ", operation="
+		return "SenderSyncMessageHistory [tableName=" + tableName + ", identifier=" + identifier + ", operation="
 				+ operation + ", messageUuid=" + messageUuid + ", requestUuid=" + requestUuid + ", snapshot=" + snapshot
 				+ ", status=" + status + ", dateSent=" + dateSent + ", dateReceived=" + dateReceived + "]";
 	}

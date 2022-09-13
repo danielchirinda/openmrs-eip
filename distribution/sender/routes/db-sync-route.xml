@@ -32,7 +32,7 @@
         <log message="Sender sync message saved" loggingLevel="DEBUG" />
         
         <setBody>
-            <spel>#{new org.openmrs.eip.app.management.entity.SenderSyncMessageDetail()}</spel>
+            <spel>#{new org.openmrs.eip.app.management.entity.SenderSyncMessageHistory()}</spel>
         </setBody>
         <script>
             <spel>
@@ -48,7 +48,7 @@
         
         <log message="Saving sender sync message detail: ${body}" loggingLevel="DEBUG" />
 
-        <to uri="jpa:SenderSyncMessageDetail?usePersist=true" />
+        <to uri="jpa:SenderSyncMessageHistory?usePersist=true" />
 
         <log message="Sender sync message Detail saved" loggingLevel="DEBUG" />
         

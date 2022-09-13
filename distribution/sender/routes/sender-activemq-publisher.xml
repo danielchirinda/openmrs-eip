@@ -127,29 +127,29 @@
 							<log
 								message="Successfully updated sender sync message with identifier ${exchangeProperty.senderSyncMessage.identifier} to ${exchangeProperty.senderSyncMessage.status}" />
 
-							<!-- Update senderSyncMessageDetail -->
+							<!-- Update SenderSyncMessageHistory -->
 							<toD
-								uri="jpa:SenderSyncMessageDetail?query=SELECT detail FROM SenderSyncMessageDetail detail WHERE detail.messageUuid='${exchangeProperty.senderSyncMessage.messageUuid}'" />
+								uri="jpa:SenderSyncMessageHistory?query=SELECT detail FROM SenderSyncMessageHistory detail WHERE detail.messageUuid='${exchangeProperty.senderSyncMessage.messageUuid}'" />
 							<choice>
 								<when>
 									<simple>${body.size()} > 0</simple>
-									<setProperty name="senderSyncMessageDetail">
+									<setProperty name="senderSyncMessageHistory">
 										<simple>${body[0]}</simple>
 									</setProperty>
 
 									<script>
 										<spel>
-											#{getProperty('senderSyncMessageDetail').markAsSent()}
+											#{getProperty('senderSyncMessageHistory').markAsSent()}
 										</spel>
 									</script>
 
 									<setBody>
-										<simple>${exchangeProperty.senderSyncMessageDetail}</simple>
+										<simple>${exchangeProperty.senderSyncMessageHistory}</simple>
 									</setBody>
-									<to uri="jpa:SenderSyncMessageDetail" />
+									<to uri="jpa:SenderSyncMessageHistory" />
 								</when>
 							</choice>
-							<!-- Update senderSyncMessageDetail -->
+							<!-- Update SenderSyncMessageHistory -->
 						</when>
 
 						<otherwise>

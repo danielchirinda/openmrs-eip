@@ -2,7 +2,7 @@ package org.openmrs.eip.web.sender;
 
 import java.util.Map;
 
-import org.openmrs.eip.app.management.entity.SenderSyncMessageDetail;
+import org.openmrs.eip.app.management.entity.SenderSyncMessageHistory;
 import org.openmrs.eip.web.RestConstants;
 import org.openmrs.eip.web.contoller.BaseRestController;
 import org.openmrs.eip.web.dto.SenderSearchDTO;
@@ -21,16 +21,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(RestConstants.API_PATH + "/dbsync/sender/sync-details")
-public class SenderSyncMessageDetailController extends BaseRestController {
+public class SenderSyncMessageHistoryController extends BaseRestController {
 
-	private static final Logger log = LoggerFactory.getLogger(SenderSyncMessageDetailController.class);
+	private static final Logger log = LoggerFactory.getLogger(SenderSyncMessageHistoryController.class);
 
 	@Autowired
 	private SenderControllerService senderControllerService;
 
 	@Override
 	public Class<?> getClazz() {
-		return SenderSyncMessageDetail.class;
+		return SenderSyncMessageHistory.class;
 	}
 
 	@GetMapping
@@ -58,11 +58,11 @@ public class SenderSyncMessageDetailController extends BaseRestController {
 		}
 
 		for (Integer id : syncMessage.getSyncMessages()) {
-			SenderSyncMessageDetail message = (SenderSyncMessageDetail) doGet(id);
+			SenderSyncMessageHistory message = (SenderSyncMessageHistory) doGet(id);
 
 			if (message != null) {
 
-				this.senderControllerService.sendItemToRetryQueue(message);
+				this.senderControllerService.resendMessageEvent(message);
 
 			}
 		}

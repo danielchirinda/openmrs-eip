@@ -336,12 +336,12 @@
     <changeSet author="dchirinda" id="20220210-1055">
         <preConditions onFail="MARK_RAN">
             <not>
-                <tableExists tableName="sender_sync_message_detail" />
+                <tableExists tableName="sender_sync_message_history" />
             </not>
         </preConditions>
         <comment>Adding sender_sync_message table</comment>
 
-        <createTable tableName="sender_sync_message_detail">
+        <createTable tableName="sender_sync_message_history">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" />
             </column>
