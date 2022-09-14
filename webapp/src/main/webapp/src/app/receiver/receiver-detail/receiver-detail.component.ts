@@ -47,7 +47,6 @@ export class ReceiverDetailComponent extends BaseListingComponent implements OnI
 
 	loadDetails(): void {
 		this.service.getDetailCountAndItems().subscribe(countAndItems => {
-			console.log('loaded itens from database', countAndItems)
 			this.store.dispatch(new ReceiverDetailLoaded(countAndItems));
 		});
 	}

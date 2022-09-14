@@ -7,8 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "receiver_sync_detail")
-public class ReceiverSyncDetail extends AbstractEntity {
+@Table(name = "receiver_sync_history")
+public class ReceiverSyncHistory extends AbstractEntity {
 
 	public static final long serialVersionUID = 1;
 
@@ -134,7 +134,7 @@ public class ReceiverSyncDetail extends AbstractEntity {
 
 	@Override
 	public String toString() {
-		return "ReceiverSyncDetail [identifier=" + identifier + ", tableName=" + tableName + ", operation=" + operation
+		return "ReceiverSyncHistory [identifier=" + identifier + ", tableName=" + tableName + ", operation=" + operation
 				+ ", district=" + district + ", healthFacility=" + healthFacility + ", healthFacilityCode="
 				+ healthFacilityCode + ", messageUuid=" + messageUuid + ", status=" + status + ", dateSent=" + dateSent
 				+ ", dateReceived=" + dateReceived + "]";

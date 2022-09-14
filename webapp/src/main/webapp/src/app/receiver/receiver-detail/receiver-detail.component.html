@@ -14,14 +14,14 @@
 						<th i18n="@@common-health-facility">Health Facility</th>
 						<th i18n="@@common-hf-code">HF code</th>
 						<th i18n="@@common-dateCreated">Date Created</th>
-						<th i18n="@@common-dateChanged">Date Sent</th>
+						<th i18n="@@common-dateSent">Date Sent</th>
 						<th i18n="@@common-dateReceived">Date Reiceved</th>
 						<th i18n="@@common-status">Status</th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr *ngFor="let e of events">
-						<td>{{e.tableName}}</td>
+						<td>{{e.tableName | modelClass}}</td>
 						<td>{{e.identifier}}</td>
 						<td>
 							<span class="text-success" [hidden]="e.operation != 'c'"

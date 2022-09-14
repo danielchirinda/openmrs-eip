@@ -15,7 +15,7 @@ export class SyncMessageEvent {
 
 	dateCreated?:string;
 
-	dateChanged?:string;
+	dateSent?:string;
 
 	dateReceived?:string;
 

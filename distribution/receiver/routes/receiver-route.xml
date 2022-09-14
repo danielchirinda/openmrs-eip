@@ -1,147 +1,183 @@
 <routes xmlns="http://camel.apache.org/schema/spring">
-    <route id="receiver-main" errorHandlerRef="shutdownErrorHandler">
-        <from uri="{{camel.input.endpoint}}" />
-        
-        <log message="Received sync message" />
+	<route id="receiver-main" errorHandlerRef="shutdownErrorHandler">
+		<from uri="{{camel.input.endpoint}}" />
 
-        <when>
-            <simple>{{openmrs.eip.dbsync.encryption.enabled}} == true</simple>
-            <!--
-                TODO If we can't decrypt the message, put it in some error queue that blocks all future incoming
-                messages
-            -->
-            <log loggingLevel="TRACE" message="Received Raw message -> ${body}" />
-            <log loggingLevel="DEBUG" message="Decrypting message.." />
+		<log message="Received sync message" />
 
-            <process ref="pgpDecryptService" />
+		<when>
+			<simple>{{openmrs.eip.dbsync.encryption.enabled}} == true</simple>
+			<!-- 
+				TODO If we can't decrypt the message, put it in some error queue that blocks all future incoming
+				messages
+				-->
+			<log loggingLevel="TRACE" message="Received Raw message -> ${body}" />
+			<log loggingLevel="DEBUG" message="Decrypting message.." />
 
-            <log loggingLevel="DEBUG" message="Done decrypting message" />
-        </when>
+			<process ref="pgpDecryptService" />
 
-        <setProperty name="is-file">
-            <method ref="isFilePredicate" />
-        </setProperty>
+			<log loggingLevel="DEBUG" message="Done decrypting message" />
+		</when>
 
-        <choice>
-            <when>
-                <simple>${exchangeProperty.is-file} == true</simple>
-                <log message="Received complex obs data file: ${headers.CamelFileName}" />
+		<setProperty name="is-file">
+			<method ref="isFilePredicate" />
+		</setProperty>
 
-                <transform>
-                    <method ref="removeFileTagsExpression" />
-                </transform>
-                <setProperty name="sync-metadata">
-                    <simple>${body.split("#")[0]}</simple>
-                </setProperty>
-                <setBody>
-                    <simple>${body.split("#")[1]}</simple>
-                </setBody>
+		<choice>
+			<when>
+				<simple>${exchangeProperty.is-file} == true</simple>
+				<log message="Received complex obs data file: ${headers.CamelFileName}" />
 
-                <!-- Complex Obs can be too large to store in the DB, for now process in serial -->
-                <!-- TODO Find a smart way to store them so they can also be processed in parallel -->
-                <to uri="seda:update-site-last-sync-date?size=65536&amp;blockWhenFull=true" />
+				<transform>
+					<method ref="removeFileTagsExpression" />
+				</transform>
+				<setProperty name="sync-metadata">
+					<simple>${body.split("#")[0]}</simple>
+				</setProperty>
+				<setBody>
+					<simple>${body.split("#")[1]}</simple>
+				</setBody>
 
-                <to uri="direct:inbound-complex-obs-sync" />
+				<!-- Complex Obs can be too large to store in the DB, for now process in serial -->
+				<!-- TODO Find a smart way to store them so they can also be processed in parallel -->
+				<to uri="seda:update-site-last-sync-date?size=65536&amp;blockWhenFull=true" />
 
-                <log message="Successfully saved complex obs file: ${headers.CamelFileName}" />
-            </when>
-            <otherwise>
-                <log loggingLevel="DEBUG" message="Received entity-payload: ${body}" />
+				<to uri="direct:inbound-complex-obs-sync" />
 
-                <setProperty name="entity-payload">
-                    <simple>${body}</simple>
-                </setProperty>
-                <setBody>
-                    <method beanType="org.openmrs.eip.component.utils.JsonUtils" method="unmarshalSyncModel(${body})" />
-                </setBody>
-                <setProperty name="sync-model">
-                    <simple>${body}</simple>
-                </setProperty>
+				<log message="Successfully saved complex obs file: ${headers.CamelFileName}" />
+			</when>
+			<otherwise>
+				<log loggingLevel="DEBUG" message="Received entity-payload: ${body}" />
 
-                <log loggingLevel="DEBUG" message="Queuing update of last sync date for sending site" />
+				<setProperty name="entity-payload">
+					<simple>${body}</simple>
+				</setProperty>
+				<setBody>
+					<method beanType="org.openmrs.eip.component.utils.JsonUtils" method="unmarshalSyncModel(${body})" />
+				</setBody>
+				<setProperty name="sync-model">
+					<simple>${body}</simple>
+				</setProperty>
 
-                <to uri="seda:update-site-last-sync-date?size=65536&amp;blockWhenFull=true" />
+				<log loggingLevel="DEBUG" message="Queuing update of last sync date for sending site" />
 
-                <log loggingLevel="DEBUG" message="Successfully queued update of last sync date for sending site" />
+				<to uri="seda:update-site-last-sync-date?size=65536&amp;blockWhenFull=true" />
 
-                <!-- If this sync message is a response to a sync request, update the request -->
-                <when>
-                    <simple>${exchangeProperty.sync-model.metadata.operation} == 'r'</simple>
+				<log loggingLevel="DEBUG" message="Successfully queued update of last sync date for sending site" />
 
-                    <log message="Received response for sync request with uuid: ${exchangeProperty.sync-model.metadata.requestUuid}" />
+				<!-- If this sync message is a response to a sync request, update the request -->
+				<when>
+					<simple>${exchangeProperty.sync-model.metadata.operation} == 'r'</simple>
 
-                    <log loggingLevel="DEBUG" message="Looking up the sync request" />
+					<log message="Received response for sync request with uuid: ${exchangeProperty.sync-model.metadata.requestUuid}" />
 
-                    <toD uri="jpa:ReceiverSyncRequest?query=SELECT r FROM ReceiverSyncRequest r WHERE r.requestUuid = '${exchangeProperty.sync-model.metadata.requestUuid}'" />
+					<log loggingLevel="DEBUG" message="Looking up the sync request" />
 
-                    <setBody>
-                        <simple>${body[0]}</simple>
-                    </setBody>
-                    
-                    <setProperty name="receiverSyncRequest">
-                        <simple>${body}</simple>
-                    </setProperty>
+					<toD uri="jpa:ReceiverSyncRequest?query=SELECT r FROM ReceiverSyncRequest r WHERE r.requestUuid = '${exchangeProperty.sync-model.metadata.requestUuid}'" />
 
-                    <log message="Updating status to received for request: ${body}" />
+					<setBody>
+						<simple>${body[0]}</simple>
+					</setBody>
 
-                    <script>
-                        <spel>
-                            #{body.markAsReceived(getProperty('sync-model').model != null)}
-                        </spel>
-                    </script>
+					<setProperty name="receiverSyncRequest">
+						<simple>${body}</simple>
+					</setProperty>
 
-                    <log message="Saving updates for sync request" loggingLevel="DEBUG" />
+					<log message="Updating status to received for request: ${body}" />
 
-                    <to uri="jpa:ReceiverSyncRequest" />
+					<script>
+						<spel>
+							#{body.markAsReceived(getProperty('sync-model').model != null)}
+						</spel>
+					</script>
 
-                    <log message="Successfully saved updates for sync request" loggingLevel="DEBUG" />
-                </when>
+					<log message="Saving updates for sync request" loggingLevel="DEBUG" />
 
-                <choice>
-                    <when>
-                        <simple>${exchangeProperty.sync-model.metadata.operation} == 'r' &amp;&amp; ${exchangeProperty.sync-model.model} == null</simple>
-                        
-                        <to uri="bean:receiverActiveMqMessagePublisher?method=sendSyncResponse(${exchangeProperty.receiverSyncRequest}, ${exchangeProperty.sync-model.metadata.messageUuid})" />
-                        
-                        <log message="Ignoring sync message because entity was not found in the remote DB for request with uuid: ${exchangeProperty.sync-model.metadata.requestUuid}" />
-                    </when>
-                    <otherwise>
-                        <log message="Entity: ${exchangeProperty.sync-model.tableToSyncModelClass}, identifier=${exchangeProperty.sync-model.model.uuid}" />
+					<to uri="jpa:ReceiverSyncRequest" />
 
-                        <setProperty name="messageToSave">
-                            <spel>
-                                #{new org.openmrs.eip.app.management.entity.SyncMessage()}
-                            </spel>
-                        </setProperty>
-                        <script>
-                            <spel>
-                                #{getProperty('messageToSave').setIdentifier(getProperty('sync-model').model.uuid)}
-                                #{getProperty('messageToSave').setModelClassName(getProperty('sync-model').tableToSyncModelClass.name)}
-                                #{getProperty('messageToSave').setEntityPayload(getProperty('entity-payload'))}
-                                #{getProperty('messageToSave').setSite(T(org.openmrs.eip.app.ReceiverContext).getSiteInfo(getProperty('sync-model').metadata.sourceIdentifier))}
-                                #{getProperty('messageToSave').setDateCreated(new java.util.Date())}
-                                #{getProperty('messageToSave').setSnapshot(getProperty('sync-model').metadata.snapshot == true)}
-                                #{getProperty('messageToSave').setMessageUuid(getProperty('sync-model').metadata.messageUuid)}
-                            </spel>
-                        </script>
-                        <setBody>
-                            <simple>${exchangeProperty.messageToSave}</simple>
-                        </setBody>
+					<log message="Successfully saved updates for sync request" loggingLevel="DEBUG" />
+				</when>
 
-                        <log loggingLevel="DEBUG" message="Saving received message" />
+				<choice>
+					<when>
+						<simple>${exchangeProperty.sync-model.metadata.operation} == 'r' &amp;&amp; ${exchangeProperty.sync-model.model} == null</simple>
 
-                        <to uri="jpa:SyncMessage?usePersist=true" />
+						<to uri="bean:receiverActiveMqMessagePublisher?method=sendSyncResponse(${exchangeProperty.receiverSyncRequest}, ${exchangeProperty.sync-model.metadata.messageUuid})" />
 
-                        <log message="Successfully saved received message" />
-                    </otherwise>
-                </choice>
-            </otherwise>
-        </choice>
+						<log message="Ignoring sync message because entity was not found in the remote DB for request with uuid: ${exchangeProperty.sync-model.metadata.requestUuid}" />
+					</when>
+					<otherwise>
+						<log message="Entity: ${exchangeProperty.sync-model.tableToSyncModelClass}, identifier=${exchangeProperty.sync-model.model.uuid}" />
 
-        <log loggingLevel="DEBUG" message="Enabling message acknowledgement" />
+						<setProperty name="messageToSave">
+							<spel>
+								#{new org.openmrs.eip.app.management.entity.SyncMessage()}
+							</spel>
+						</setProperty>
+						<script>
+							<spel>
+								#{getProperty('messageToSave').setIdentifier(getProperty('sync-model').model.uuid)}
+								#{getProperty('messageToSave').setModelClassName(getProperty('sync-model').tableToSyncModelClass.name)}
+								#{getProperty('messageToSave').setEntityPayload(getProperty('entity-payload'))}
+								#{getProperty('messageToSave').setSite(T(org.openmrs.eip.app.ReceiverContext).getSiteInfo(getProperty('sync-model').metadata.sourceIdentifier))}
+								#{getProperty('messageToSave').setDateCreated(new java.util.Date())}
+								#{getProperty('messageToSave').setSnapshot(getProperty('sync-model').metadata.snapshot == true)}
+								#{getProperty('messageToSave').setMessageUuid(getProperty('sync-model').metadata.messageUuid)}
+							</spel>
+						</script>
+						<setBody>
+							<simple>${exchangeProperty.messageToSave}</simple>
+						</setBody>
 
-        <script>
-            <method beanType="org.openmrs.eip.app.CustomMessageListenerContainer" method="enableAcknowledgement()" />
-        </script>
-    </route>
+						<log loggingLevel="DEBUG" message="Saving received message" />
+
+						<to uri="jpa:SyncMessage?usePersist=true" />
+
+						<!-- Create ReceiverSyncHistory Entity -->
+						<setProperty name="historyMessageToSave">
+							<spel>
+								#{new org.openmrs.eip.app.management.entity.ReceiverSyncHistory()}
+							</spel>
+						</setProperty>
+						<setProperty name="siteInfo">
+							<spel>
+								#{T(org.openmrs.eip.app.ReceiverContext).getSiteInfo(getProperty('sync-model').metadata.sourceIdentifier)}
+							</spel>
+						</setProperty>
+						<script>
+							<spel>
+								#{getProperty('historyMessageToSave').setIdentifier(getProperty('sync-model').model.uuid)}
+								#{getProperty('historyMessageToSave').setTableName(getProperty('sync-model').tableToSyncModelClass.name)}
+								#{getProperty('historyMessageToSave').setOperation(getProperty('sync-model').metadata.operation)}
+								#{getProperty('historyMessageToSave').setStatus('RECEIVED')}
+								#{getProperty('historyMessageToSave').setDistrict(getProperty('siteInfo').siteDistrict)}
+								#{getProperty('historyMessageToSave').setHealthFacility(getProperty('siteInfo').siteInstanceName)}
+								#{getProperty('historyMessageToSave').setHealthFacilityCode(getProperty('siteInfo').identifier)}
+								#{getProperty('historyMessageToSave').setDateCreated(new java.util.Date())}
+								#{getProperty('historyMessageToSave').setDateSent(T(org.openmrs.eip.component.utils.DateUtils).convertLocalDateTimeToDate(getProperty('sync-model').metadata.dateSent))}
+								#{getProperty('historyMessageToSave').setMessageUuid(getProperty('sync-model').metadata.messageUuid)}
+							</spel>
+						</script>
+						<setBody>
+							<simple>${exchangeProperty.historyMessageToSave}</simple>
+						</setBody>
+
+						<log loggingLevel="DEBUG" message="Saving received message" />
+
+						<to uri="jpa:ReceiverSyncHistory?usePersist=true" />
+
+
+						<!-- Create ReceiverSyncHistory Entity -->
+
+						<log message="Successfully saved received message" />
+					</otherwise>
+				</choice>
+			</otherwise>
+		</choice>
+
+		<log loggingLevel="DEBUG" message="Enabling message acknowledgement" />
+
+		<script>
+			<method beanType="org.openmrs.eip.app.CustomMessageListenerContainer" method="enableAcknowledgement()" />
+		</script>
+	</route>
 </routes>

@@ -2,7 +2,7 @@ package org.openmrs.eip.web.receiver;
 
 import java.util.Map;
 
-import org.openmrs.eip.app.management.entity.ReceiverSyncDetail;
+import org.openmrs.eip.app.management.entity.ReceiverSyncHistory;
 import org.openmrs.eip.web.RestConstants;
 import org.openmrs.eip.web.contoller.BaseRestController;
 import org.slf4j.Logger;
@@ -19,7 +19,7 @@ public class ReceiverSyncDetailController extends BaseRestController {
 	
 	@Override
 	public Class<?> getClazz() {
-		return ReceiverSyncDetail.class;
+		return ReceiverSyncHistory.class;
 	}
 	
 	@GetMapping

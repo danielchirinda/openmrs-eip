@@ -40,7 +40,7 @@ export class TableSyncStatusComponent extends BaseListingComponent implements On
 		this.loadedSubscription = this.store.pipe(select(GET_SYNC_HISTORY)).subscribe(
 			countAndItems => {
 				this.count = countAndItems?.count;
-				this.filteredSyncStatus = countAndItems?.items;
+				this.dtOptions.data = countAndItems?.items
 				this.reRender();
 			}
 		);
@@ -71,13 +71,9 @@ export class TableSyncStatusComponent extends BaseListingComponent implements On
 			// on onclick Method
 			rowCallback: (row: Node, data: any[] | Object, index: number) => {
 				const self = this;
-				// Unbind first in order to avoid any duplicate handler
-				// (see https://github.com/l-lin/angular-datatables/issues/87)
-				// Note: In newer jQuery v3 versions, `unbind` and `bind` are
-				// deprecated in favor of `off` and `on`
 				$('td', row).off('click');
 				$('td', row).on('click', () => {
-				  self.someClickHandler(data);
+				  self.eventClickHandler(data);
 				});
 				return row;
 			  }
@@ -91,7 +87,7 @@ export class TableSyncStatusComponent extends BaseListingComponent implements On
 
 	}
 
-	someClickHandler(event: any): void {
+	eventClickHandler(event: any): void {
 		this.selectEventHistory = event
 		this.openSyncDetails = true
 
@@ -100,12 +96,10 @@ export class TableSyncStatusComponent extends BaseListingComponent implements On
 	openOverall() {
 
 		this.service.getSyncStatusDetails().subscribe(countAndItems => {
-			console.log('loaded itens from database new', countAndItems);
 			this.store.dispatch(new SyncHistoryLoaded(countAndItems));
 		});
 
 	}
-
 
 	searchByPeriod(event: Event) {
 

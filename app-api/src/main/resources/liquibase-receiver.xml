@@ -1161,12 +1161,12 @@
         <changeSet author="dchirinda" id="20220707-1504">
         <preConditions onFail="MARK_RAN">
             <not>
-                <tableExists tableName="receiver_sync_detail" />
+                <tableExists tableName="receiver_sync_history" />
             </not>
         </preConditions>
         <comment>Adding receiver_sync_detail table</comment>
 
-        <createTable tableName="receiver_sync_detail">
+        <createTable tableName="receiver_sync_history">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" />
             </column>

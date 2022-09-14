@@ -3,7 +3,6 @@ import { NgbModal, NgbModalOptions, NgbModalRef } from '@ng-bootstrap/ng-bootstr
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { BaseListingComponent } from 'src/app/shared/base-listing.component';
-import { NgbdModalConfirm } from './confirm-modal';
 import { SyncDetailLoaded } from './state/sync-detail.actions';
 import { GET_SYNC_DETAIL } from './state/sync-detail.reducer';
 import { SyncMessageStatus } from './status/sync-message-status';
@@ -12,9 +11,6 @@ import { SyncDetailService } from './sync-detail.service';
 import { SyncMessageEvent } from './sync-message-event';
 import { SearchEvent } from './search-event';
 import { ResendMessage } from './resend-message-id';
-import { Location } from '@angular/common';
-
-
 
 @Component({
 	selector: 'sync-detail',
@@ -33,8 +29,6 @@ export class SyncDetailComponent extends BaseListingComponent implements OnInit 
 	events?: SyncMessageEvent[];
 
 	loadedSubscription?: Subscription;
-
-	modalRef?: NgbModalRef;
 
 	syncDetailToView?: SyncDetail;
 
@@ -63,9 +57,6 @@ export class SyncDetailComponent extends BaseListingComponent implements OnInit 
 	}
 
 	ngOnInit(): void {
-		console.log('this is event emitted', this.tableName)
-		console.log('search data', this.startDate)
-		console.log('search data', this.endDate)
 		this.searchEvent.startDate=this.startDate
 		this.searchEvent.endDate=this.endDate
 		this.searchEvent.tableName=this.tableName
@@ -101,29 +92,13 @@ export class SyncDetailComponent extends BaseListingComponent implements OnInit 
 
 	// custom method's
 
-	closeDetailsDialog(): void {
-		this.modalRef?.close();
-	}
-
-	open(syncMessage: SyncMessageEvent) {
-		console.log('SYNC MESSAGE SELECTED', syncMessage)
-
-		const dialogConfig: NgbModalOptions = {
-			size: 'xl',
-			scrollable: true
-		}
-		this.modalRef = this.modalService.open(NgbdModalConfirm, dialogConfig);
-		this.modalRef.componentInstance.syncMessageEvent = syncMessage;
-
-	}
-
 	checkUncheckAll(event: any) {
 		const isChecked = event.target.checked
 		let newEvent: SyncMessageEvent[] = [];
 
 		this.events?.forEach(currentEvent => {
 			newEvent.push({
-				dateChanged: currentEvent.dateChanged,
+				dateSent: currentEvent.dateSent,
 				dateCreated: currentEvent.dateCreated,
 				dateReceived: currentEvent.dateReceived,
 				checked: isChecked,
@@ -169,7 +144,8 @@ export class SyncDetailComponent extends BaseListingComponent implements OnInit 
 		  this.service.resendMultipleEvent(this.resendMessage).subscribe((message) =>{
 		},
 		error => {
-			console.log('Error message', error)
+			throw new Error(error);
+
 		}
 		);
 		this.loadDetails();

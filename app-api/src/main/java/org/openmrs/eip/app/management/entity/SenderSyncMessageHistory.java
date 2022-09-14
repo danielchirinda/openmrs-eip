@@ -142,7 +142,7 @@ public class SenderSyncMessageHistory extends AbstractEntity {
 
 	}
 
-	public void markAsReceive(SenderSyncResponse response) {
+	public void markAsReceived(SenderSyncResponse response) {
 		this.setDateReceived(DateUtils.convertLocalDateTimeToDate(response.getDateSentByReceiver()));
 		this.status = SenderSyncMessageStatus.RECEIVED;
 	}
