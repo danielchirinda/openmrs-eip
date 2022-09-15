@@ -4,8 +4,8 @@
 
         <choice>
             <when>
-                <method beanType="org.openmrs.eip.app.ReceiverContext" method="isStopSignalReceived()" />
-                <log loggingLevel="DEBUG" message="The application is already shutting down" />
+                <method beanType="org.openmrs.eip.app.AppUtils" method="isAppContextStopping()" />
+                <log loggingLevel="DEBUG" message="The application context is already stopping" />
             </when>
             <when>
                 <method beanType="org.openmrs.eip.app.AppUtils" method="isShuttingDown()" />

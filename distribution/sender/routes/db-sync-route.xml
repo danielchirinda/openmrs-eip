@@ -3,11 +3,12 @@
     <route id="out-bound-db-sync" errorHandlerRef="shutdownErrorHandler">
         <from uri="direct:out-bound-db-sync" />
 
-        <log message="Start db-sync-route: ${body}" loggingLevel="DEBUG" />
-            <setProperty name="messageUuid">
+        <log loggingLevel="DEBUG" message="Start ${routeId}: ${body}" />
+        
+        <setProperty name="messageUuid">
                <spel>#{T(java.util.UUID).randomUUID().toString()}</spel>
-           </setProperty>
-           
+        </setProperty>
+        
         <setBody>
             <spel>#{new org.openmrs.eip.app.management.entity.SenderSyncMessage()}</spel>
         </setBody>
@@ -18,20 +19,16 @@
                 #{body.setOperation(getProperty('event').operation)}
                 #{body.setSnapshot(getProperty('event').snapshot)}
                 #{body.setDateCreated(new java.util.Date())}
-                #{body.setMessageUuid(getProperty('messageUuid'))}
+                #{body.setMessageUuid(T(java.util.UUID).randomUUID().toString())}
                 #{body.setRequestUuid(getProperty('event').requestUuid)}
             </spel>
         </script>
         
-        <log message="Saving sender sync message: ${body}" loggingLevel="INFO" />
-        
-        <log message="Saving sender sync message: ${body}" loggingLevel="DEBUG" />
+        <log loggingLevel="DEBUG" message="Saving sync message to the outbound queue -> ${body}" />
 
         <to uri="jpa:SenderSyncMessage?usePersist=true" />
 
-        <log message="Sender sync message saved" loggingLevel="DEBUG" />
-        
-        <setBody>
+                <setBody>
             <spel>#{new org.openmrs.eip.app.management.entity.SenderSyncMessageHistory()}</spel>
         </setBody>
         <script>
@@ -49,10 +46,9 @@
         <log message="Saving sender sync message detail: ${body}" loggingLevel="DEBUG" />
 
         <to uri="jpa:SenderSyncMessageHistory?usePersist=true" />
-
-        <log message="Sender sync message Detail saved" loggingLevel="DEBUG" />
+        <log message="Sync message saved to the outbound queue" />
         
-        <log message="End db-sync-route" loggingLevel="DEBUG" />
+        <log loggingLevel="DEBUG" message="End ${routeId}" />
 
     </route>
 

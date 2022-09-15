@@ -3,7 +3,7 @@ package org.openmrs.eip.app.route.sender;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.openmrs.eip.app.route.sender.SenderTestUtils.getEntity;
+import static org.openmrs.eip.app.route.TestUtils.getEntity;
 import static org.openmrs.eip.app.sender.SenderConstants.EX_PROP_DBZM_EVENT;
 import static org.openmrs.eip.app.sender.SenderConstants.EX_PROP_EVENT;
 import static org.openmrs.eip.app.sender.SenderConstants.EX_PROP_IS_SUBCLASS;
@@ -93,7 +93,7 @@ public class DebeziumEventProcessorRouteTest extends BaseSenderRouteTest {
 	
 	@Test
 	public void shouldProcessAnEventForASubclassEntity() throws Exception {
-		final Long debeziumEventId = 2L;
+		final Long debeziumEventId = 3L;
 		DebeziumEvent debeziumEvent = getEntity(DebeziumEvent.class, debeziumEventId);
 		Event event = debeziumEvent.getEvent();
 		assertTrue(Utils.isSubclassTable(event.getTableName()));

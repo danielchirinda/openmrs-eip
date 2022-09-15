@@ -3,7 +3,7 @@ package org.openmrs.eip.app.route.sender;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.openmrs.eip.app.route.sender.SenderTestUtils.getEntity;
+import static org.openmrs.eip.app.route.TestUtils.getEntity;
 import static org.openmrs.eip.app.sender.SenderConstants.EX_PROP_DBZM_EVENT;
 import static org.openmrs.eip.app.sender.SenderConstants.EX_PROP_EVENT;
 import static org.openmrs.eip.app.sender.SenderConstants.EX_PROP_IS_SUBCLASS;
@@ -94,7 +94,7 @@ public class ProcessorRouteTest extends BaseSenderRouteTest {
 	@Test
 	public void shouldProcessForARowForASubclassEntityAndSetTheUuidIfMissing() throws Exception {
 		Exchange exchange = new DefaultExchange(camelContext);
-		final Long debeziumEventId = 2L;
+		final Long debeziumEventId = 3L;
 		DebeziumEvent debeziumEvent = getEntity(DebeziumEvent.class, debeziumEventId);
 		assertNotNull(debeziumEvent);
 		Event event = debeziumEvent.getEvent();

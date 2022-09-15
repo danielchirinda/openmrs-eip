@@ -15,7 +15,8 @@ import org.apache.camel.CamelContext;
 import org.openmrs.eip.app.AppUtils;
 import org.openmrs.eip.app.management.entity.DebeziumEvent;
 import org.openmrs.eip.app.management.entity.SenderRetryQueueItem;
-import org.openmrs.eip.component.DatabaseOperation;
+import org.openmrs.eip.app.management.entity.SenderSyncMessage;
+import org.openmrs.eip.component.SyncOperation;
 import org.openmrs.eip.component.SyncProfiles;
 import org.openmrs.eip.component.exception.EIPException;
 import org.openmrs.eip.web.Dashboard;
@@ -31,6 +32,8 @@ public class SenderDashboardGenerator implements DashboardGenerator {
 	private static final String ERROR_ENTITY_NAME = SenderRetryQueueItem.class.getSimpleName();
 	
 	private static final String EVENT_ENTITY_NAME = DebeziumEvent.class.getSimpleName();
+	
+	private static final String SYNC_ENTITY_NAME = SenderSyncMessage.class.getSimpleName();
 	
 	protected CamelContext camelContext;
 	
@@ -52,9 +55,12 @@ public class SenderDashboardGenerator implements DashboardGenerator {
 		final Set<Object> mostEncounteredErrors = new ConcurrentHashSet();
 		final Map<String, Map> eventsTableStatsMap = new ConcurrentHashMap();
 		final AtomicInteger totalEventCount = new AtomicInteger();
+		final AtomicInteger totalSyncMsgCount = new AtomicInteger();
+		final Map<String, Map> syncMsgsTableStatsMap = new ConcurrentHashMap();
+		final Map statusItemCountMap = new ConcurrentHashMap();
 		
 		AppUtils.getTablesToSync().parallelStream().forEach(table -> {
-			Arrays.stream(DatabaseOperation.values()).parallel().forEach(op -> {
+			Arrays.stream(SyncOperation.values()).parallel().forEach(op -> {
 				//TODO Filter on route i.e. where it matches direct:out-bound-db-sync
 				String tableName = table.toLowerCase();
 				Integer errorCount = on(camelContext)
@@ -91,6 +97,23 @@ public class SenderDashboardGenerator implements DashboardGenerator {
 					eventsTableStatsMap.get(tableName).put(op, eventCount);
 				}
 				
+				Integer msgCount = on(camelContext)
+				        .to("jpa:" + SYNC_ENTITY_NAME + "?query=SELECT count(*) FROM " + SYNC_ENTITY_NAME
+				                + " WHERE LOWER(tableName) = '" + tableName + "' AND operation = '" + op + "'")
+				        .request(Integer.class);
+				
+				totalSyncMsgCount.addAndGet(msgCount);
+				
+				if (msgCount > 0) {
+					synchronized (this) {
+						if (syncMsgsTableStatsMap.get(tableName) == null) {
+							syncMsgsTableStatsMap.put(tableName, new ConcurrentHashMap());
+						}
+					}
+					
+					syncMsgsTableStatsMap.get(tableName).put(op, msgCount);
+				}
+				
 			});
 		});
 		
@@ -99,7 +122,7 @@ public class SenderDashboardGenerator implements DashboardGenerator {
 			        + "?query=SELECT exceptionType, count(*) FROM " + ERROR_ENTITY_NAME + " GROUP BY exceptionType")
 			        .request(List.class);
 			
-			items.parallelStream().forEach(values -> {
+			items.forEach(values -> {
 				final String exception = values[0].toString();
 				final Integer count = Integer.valueOf(values[1].toString());
 				exceptionCountMap.put(exception, count);
@@ -126,6 +149,16 @@ public class SenderDashboardGenerator implements DashboardGenerator {
 			});
 		}
 		
+		if (totalSyncMsgCount.get() > 0) {
+			List<Object[]> items = on(camelContext).to(
+			    "jpa:" + SYNC_ENTITY_NAME + "?query=SELECT status, count(*) FROM " + SYNC_ENTITY_NAME + " GROUP BY status")
+			        .request(List.class);
+			
+			items.forEach(values -> {
+				statusItemCountMap.put(values[0], values[1]);
+			});
+		}
+		
 		Dashboard dashboard = new Dashboard();
 		Map<String, Object> errors = new ConcurrentHashMap();
 		errors.put("totalCount", totalErrorCount);
@@ -139,6 +172,12 @@ public class SenderDashboardGenerator implements DashboardGenerator {
 		pendingEvents.put("totalCount", totalEventCount);
 		pendingEvents.put("tableStatsMap", eventsTableStatsMap);
 		dashboard.add("pendingEvents", pendingEvents);
+		
+		Map<String, Object> syncMessages = new ConcurrentHashMap();
+		syncMessages.put("totalCount", totalSyncMsgCount);
+		syncMessages.put("tableStatsMap", syncMsgsTableStatsMap);
+		syncMessages.put("statusItemCountMap", statusItemCountMap);
+		dashboard.add("syncMessages", syncMessages);
 		
 		return dashboard;
 	}
