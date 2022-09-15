@@ -1,17 +1,13 @@
-export class Event {
-
-	identifier?: string;
+export class SyncEvent {
 
 	primaryKeyId?: string;
+
+	identifier?: string;
 
 	tableName?: string;
 
 	operation?: string;
 
-	snapshot?: boolean;
-
-
-	//New Attr for test
 	dateCreated?:string;
 
 	dateSend?:string;
