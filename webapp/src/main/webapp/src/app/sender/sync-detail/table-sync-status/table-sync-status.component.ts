@@ -23,7 +23,7 @@ export class TableSyncStatusComponent extends BaseListingComponent implements On
 
 	filteredSyncStatus?: SyncMessageStatus[];
 
-	selectEventHistory?: SyncMessageStatus;
+	selectTableName?: string;
 
 	openSyncDetails: boolean = false
 
@@ -70,7 +70,7 @@ export class TableSyncStatusComponent extends BaseListingComponent implements On
 	}
 
 	eventClickHandler(event: any): void {
-		this.selectEventHistory = event
+		this.selectTableName = event[0]
 		this.openSyncDetails = true
 
 	}
