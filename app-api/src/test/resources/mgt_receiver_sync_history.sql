@@ -1,0 +1,2 @@
+INSERT INTO receiver_sync_history (table_name,identifier,operation,district,health_facility,health_facility_code,date_created,date_sent,date_received,status,message_uuid) VALUES
+	 ('org.openmrs.eip.component.model.PatientModel','3b080fb4-eb72-497d-b6f0-dfb0d437d5ca','u','Maputo','Maputo','1994_daniel_chirinda','2022-09-15 00:47:32.316000000','2022-09-15 00:40:39.313000000',NULL,'RECEIVED','0eae0087-4ddb-4765-9b59-b38c6fb95b32');

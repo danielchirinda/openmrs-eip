@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(RestConstants.API_PATH + "/dbsync/receiver/details")
-public class ReceiverSyncDetailController extends BaseRestController {
+public class ReceiverSyncHistoryController extends BaseRestController {
 	
-	private static final Logger log = LoggerFactory.getLogger(ReceiverSyncDetailController.class);
+	private static final Logger log = LoggerFactory.getLogger(ReceiverSyncHistoryController.class);
 	
 	@Override
 	public Class<?> getClazz() {

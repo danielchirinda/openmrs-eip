@@ -37,7 +37,7 @@
 						<th i18n="@@common-identifier">Identifier</th>
 						<th i18n="@@common-operation">Operation</th>
 						<th i18n="@@common-dateAdded">Date Created</th>
-						<th i18n="@@common-dateChanged">Date Sent</th>
+						<th i18n="@@common-dateSent">Date Sent</th>
 						<th i18n="@@common-dateReceived">Date Reiceved</th>
 						<th i18n="@@common-status">Status</th>
 					</tr>
@@ -58,10 +58,10 @@
 						<td>{{e.dateSent| date:'yyyy-MM-dd HH:mm:ss.SSS'}}</td>
 						<td>{{e.dateReceived| date:'yyyy-MM-dd HH:mm:ss.SSS'}}</td>
 						<td>
-							<span [hidden]="e.status != 'SENT'" i18n="@@common-sent">Sent</span>
-							<span [hidden]="e.status != 'RECEIVED'" i18n="@@common-received">
+							<span [hidden]="e.status != 'SENT'" i18n="@@common-event-sent">Sent</span>
+							<span [hidden]="e.status != 'RECEIVED'" i18n="@@common-event-new">
 								Received</span>
-							<span [hidden]="e.status != 'NEW'" i18n="@@common-new">
+							<span [hidden]="e.status != 'NEW'" i18n="@@common-event-received">
 								New</span>
 
 						</td>
@@ -75,7 +75,7 @@
 								Resend selected Event</span></button>
 					</div>
 					<div class="col-md-2">
-						<button class="btn btn-secondary" (click)="back()"> <i class="bi bi-arrow-left-short"></i> <span i18n="@@common-resend">
+						<button class="btn btn-secondary" (click)="back()"> <i class="bi bi-arrow-left-short"></i> <span i18n="@@common-back">
 								 Back</span></button>
 					</div>
 				</div>

@@ -39,15 +39,35 @@
 		</div>
 	</div>
 
-	<div>
+
+
+	<div >
 		<h5><span class="badge badge-dark" i18n="@@common-total-count">Total Count</span>&nbsp;<span
-				class="badge border border-secondary">{{count}}</span></h5>
+				class="badge border border-secondary">{{count}}</span></h5>;
 		<div class="ui-bar-spacer">
 			<table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-striped text-center">
+				<thead>
+					<tr>
+						<th i18n="@@common-table-name">Table Name</th>
+						<th i18n="@@common-total-events">Total Events</th>
+						<th i18n="@@common-event-sent">Sent Itens</th>
+						<th i18n="@@common-event-received">Received Items</th>
+						<th i18n="@@common-event-new">New Itens</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr *ngFor="let e of filteredSyncStatus">
+						<td>{{e.tableName}}</td>
+						<td>{{someTotalEvent(e.nonReceivedItens,e.sentItens,e.receivedItens)}}</td>
+						<td>{{e.sentItens ? e.sentItens : 0 }}</td>
+						<td>{{e.receivedItens ? e.receivedItens : 0}}</td>
+						<td>{{e.nonReceivedItens ? e.nonReceivedItens :0}}</td>
+					</tr>
+				</tbody>
 			</table>
-
 		</div>
 	</div>
+
 </div>
 
 <div *ngIf="openSyncDetails">

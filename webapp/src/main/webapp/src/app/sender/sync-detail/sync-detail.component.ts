@@ -144,7 +144,7 @@ export class SyncDetailComponent extends BaseListingComponent implements OnInit 
 		  this.service.resendMultipleEvent(this.resendMessage).subscribe((message) =>{
 		},
 		error => {
-			throw new Error(error);
+			// throw new Error(error);
 
 		}
 		);

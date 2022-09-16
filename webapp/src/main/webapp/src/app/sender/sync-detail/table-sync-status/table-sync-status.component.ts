@@ -40,7 +40,7 @@ export class TableSyncStatusComponent extends BaseListingComponent implements On
 		this.loadedSubscription = this.store.pipe(select(GET_SYNC_HISTORY)).subscribe(
 			countAndItems => {
 				this.count = countAndItems?.count;
-				this.dtOptions.data = countAndItems?.items
+				this.filteredSyncStatus = countAndItems?.items
 				this.reRender();
 			}
 		);
@@ -49,34 +49,16 @@ export class TableSyncStatusComponent extends BaseListingComponent implements On
 			pagingType: 'full_numbers',
 			deferLoading: 12,
 			searching: true,
-			columns: [{
-				title: 'Table Name',
-				data: 'tableName',
-			},
-			{
-				title: 'sent Itens',
-				data: 'sentItens',
-			},
-			{
-				title: 'Non Received Itens',
-				data: 'nonReceivedItens',
-			},
-			{
-				title: 'Received Itens',
-				data: 'receivedItens',
-			}
-			],
-			data: this.filteredSyncStatus,
 			processing: true,
 			// on onclick Method
 			rowCallback: (row: Node, data: any[] | Object, index: number) => {
 				const self = this;
 				$('td', row).off('click');
 				$('td', row).on('click', () => {
-				  self.eventClickHandler(data);
+					self.eventClickHandler(data);
 				});
 				return row;
-			  }
+			}
 		};
 
 		this.openOverall();
@@ -107,10 +89,18 @@ export class TableSyncStatusComponent extends BaseListingComponent implements On
 			this.filteredSyncStatus = []
 			this.filteredSyncStatus = countAndItems.items;
 			this.count = countAndItems.count;
-			this.dtOptions.data = countAndItems.items
 			this.reRender();
 		});
 
+
+	}
+
+	someTotalEvent(nonReceivedItens: any, sentItens: any, receivedItens: any) {
+		let unReceived = nonReceivedItens ? parseFloat(nonReceivedItens) : 0
+		let sent = sentItens ? parseFloat(sentItens) : 0
+		let received = receivedItens ? parseFloat(receivedItens) : 0
+
+		return unReceived + sent + received
 
 	}
 

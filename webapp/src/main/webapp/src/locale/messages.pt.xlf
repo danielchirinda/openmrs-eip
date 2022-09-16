@@ -346,7 +346,7 @@
 		<unit id="common-status">
 			<segment>
 				<source>Status</source>
-				<target></target>
+				<target>Estado</target>
 			</segment>
 		</unit>
 		<unit id="common-request">
@@ -391,10 +391,10 @@
 				<target>Eventos Pendentes</target>
 			</segment>
 		</unit>
-		<unit id="sync-details">
+		<unit id="common-sync-status">
 			<segment>
-				<source>Details</source>
-				<target>Detalhes</target>
+				<source>Sync Status</source>
+				<target>Estado de Envio</target>
 			</segment>
 		</unit>
 		<unit id="common-dateChanged">
@@ -403,22 +403,16 @@
 				<target>Data Actualização</target>
 			</segment>
 		</unit>
-		<unit id="common-status">
-			<segment>
-				<source>Status</source>
-				<target>Estado</target>
-			</segment>
-		</unit>
 		<unit id="common-dateReceived">
 			<segment>
-				<source>Date Received</source>
-				<target>Data Recebida</target>
+				<source>Received Date</source>
+				<target>Data de recebimento</target>
 			</segment>
 		</unit>
-		<unit id="common-resend-message">
+		<unit id="common-dateSent">
 			<segment>
-				<source>Are you sure you want to Resend the event to the central server?</source>
-				<target>Tem certeza de que deseja reenviar o evento para o servidor central?</target>
+				<source>Received Date</source>
+				<target>Data de Envio</target>
 			</segment>
 		</unit>
 		<unit id="common-search-period">
@@ -430,7 +424,7 @@
 		<unit id="common-resend">
 			<segment>
 				<source>Resend selected Event</source>
-				<target>Reenviar eventos selecionados</target>
+				<target>Reenviar eventos</target>
 			</segment>
 		</unit>
 		<unit id="common-start">
@@ -443,6 +437,36 @@
 			<segment>
 				<source>Start Time</source>
 				<target>Data Fim</target>
+			</segment>
+		</unit>
+		<unit id="common-back">
+			<segment>
+				<source>Back</source>
+				<target>Voltar</target>
+			</segment>
+		</unit>
+		<unit id="common-event-sent">
+			<segment>
+				<source>Sent</source>
+				<target>Enviado</target>
+			</segment>
+		</unit>
+				<unit id="common-event-new">
+			<segment>
+				<source>New</source>
+				<target>Novo</target>
+			</segment>
+		</unit>
+		<unit id="common-event-received">
+			<segment>
+				<source>Received</source>
+				<target>Recebido</target>
+			</segment>
+		</unit>
+		<unit id="common-total-events">
+			<segment>
+				<source>Total Events</source>
+				<target>Total de Eventos</target>
 			</segment>
 		</unit>
 	</file>
