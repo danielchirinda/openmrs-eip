@@ -469,5 +469,11 @@
 				<target>Total de Eventos</target>
 			</segment>
 		</unit>
+		<unit id="common-header-search">
+			<segment>
+				<source>Sync Details Search Data</source>
+				<target>Dados de pesquisa de detalhes da sincronização</target>
+			</segment>
+		</unit>
 	</file>
 </xliff>
