@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openmrs.eip.web.dto.SenderSearchDTO;
-import org.openmrs.eip.web.sender.dto.SyncMessageIdDTO;
+import org.openmrs.eip.web.sender.dto.SyncMessageId;
 
 public  final class SendSyncMessageFactory {
 
-	public SyncMessageIdDTO createSyncMessageIdDTOFactory() {
+	public SyncMessageId createSyncMessageIdDTOFactory() {
 
-		SyncMessageIdDTO messageIdDTO = new SyncMessageIdDTO();
+		SyncMessageId messageIdDTO = new SyncMessageId();
 		List<Integer> syncMessages = new ArrayList<>();
 		syncMessages.add(null);
 		messageIdDTO.setSyncMessages(syncMessages);

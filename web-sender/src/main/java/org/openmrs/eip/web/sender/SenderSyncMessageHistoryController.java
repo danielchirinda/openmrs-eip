@@ -6,8 +6,8 @@ import org.openmrs.eip.app.management.entity.SenderSyncMessageHistory;
 import org.openmrs.eip.web.RestConstants;
 import org.openmrs.eip.web.contoller.BaseRestController;
 import org.openmrs.eip.web.dto.SenderSearchDTO;
-import org.openmrs.eip.web.sender.dto.SyncMessageIdDTO;
-import org.openmrs.eip.web.sender.services.SenderControllerService;
+import org.openmrs.eip.web.sender.dto.SyncMessageId;
+import org.openmrs.eip.web.sender.services.SenderService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +26,7 @@ public class SenderSyncMessageHistoryController extends BaseRestController {
 	private static final Logger log = LoggerFactory.getLogger(SenderSyncMessageHistoryController.class);
 
 	@Autowired
-	private SenderControllerService senderControllerService;
+	private SenderService senderService;
 
 	@Override
 	public Class<?> getClazz() {
@@ -52,7 +52,7 @@ public class SenderSyncMessageHistoryController extends BaseRestController {
 	}
 
 	@PatchMapping("/resend")
-	public void resendEvent(@RequestBody SyncMessageIdDTO syncMessage) {
+	public void resendEvent(@RequestBody SyncMessageId syncMessage) {
 		if (log.isDebugEnabled()) {
 			log.debug("Resend Sync Message List with size : " + syncMessage.getSyncMessages());
 		}
@@ -62,7 +62,7 @@ public class SenderSyncMessageHistoryController extends BaseRestController {
 
 			if (message != null) {
 
-				this.senderControllerService.resendMessageEvent(message);
+				this.senderService.resendMessageEvent(message);
 
 			}
 		}

@@ -2,7 +2,7 @@ package org.openmrs.eip.web.sender.dto;
 
 import java.util.List;
 
-public class SyncMessageIdDTO {
+public class SyncMessageId {
 
 	private List<Integer> syncMessages;
 
