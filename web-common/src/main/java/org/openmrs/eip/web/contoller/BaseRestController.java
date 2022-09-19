@@ -34,7 +34,7 @@ public abstract class BaseRestController {
 	private SenderSyncMessageService senderSyncMessageService;
 
 	public Map<String, Object> doGetAll() {
-		Map<String, Object> results = new HashMap<String, Object>(2);
+		Map<String, Object> results = new HashMap(2);
 		Integer count = on(camelContext).to("jpa:" + getName() + "?query=SELECT count(*) FROM " + getName())
 				.request(Integer.class);
 
@@ -69,7 +69,7 @@ public abstract class BaseRestController {
 	 */
 	public Map<String, Object> doCount() {
 
-		Map<String, Object> results = new HashMap<String, Object>(2);
+		Map<String, Object> results = new HashMap(2);
 
 		List<CountDTO> messageItensObjects = senderSyncMessageService.fetchSyncHistory();
 
