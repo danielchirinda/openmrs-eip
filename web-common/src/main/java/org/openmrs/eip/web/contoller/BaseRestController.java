@@ -14,7 +14,7 @@ import org.apache.camel.CamelContext;
 import org.apache.camel.ProducerTemplate;
 import org.openmrs.eip.app.management.repository.SenderSyncMessageHistoryRepository;
 import org.openmrs.eip.app.management.service.SenderSyncMessageService;
-import org.openmrs.eip.app.utils.CountDTO;
+import org.openmrs.eip.app.utils.Count;
 import org.openmrs.eip.web.dto.SenderSearchDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,7 +71,7 @@ public abstract class BaseRestController {
 
 		Map<String, Object> results = new HashMap(2);
 
-		List<CountDTO> messageItensObjects = senderSyncMessageService.fetchSyncHistory();
+		List<Count> messageItensObjects = senderSyncMessageService.fetchSyncHistory();
 
 		results.put(FIELD_COUNT, messageItensObjects.size());
 		results.put(FIELD_ITEMS, messageItensObjects);
@@ -87,7 +87,7 @@ public abstract class BaseRestController {
 
 		Map<String, Object> results = new HashMap<String, Object>(2);
 
-		List<CountDTO> messageItensObjects = senderSyncMessageService.fetchSyncHistoryByDate(startDate, endDate);
+		List<Count> messageItensObjects = senderSyncMessageService.fetchSyncHistoryByDate(startDate, endDate);
 
 		results.put(FIELD_COUNT, messageItensObjects.size());
 		results.put(FIELD_ITEMS, messageItensObjects);

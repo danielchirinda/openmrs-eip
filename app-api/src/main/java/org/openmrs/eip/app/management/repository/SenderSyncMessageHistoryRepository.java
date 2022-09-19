@@ -3,7 +3,7 @@ package org.openmrs.eip.app.management.repository;
 import java.util.List;
 
 import org.openmrs.eip.app.management.entity.SenderSyncMessageHistory;
-import org.openmrs.eip.app.utils.CountDTO;
+import org.openmrs.eip.app.utils.Count;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -31,7 +31,7 @@ public interface SenderSyncMessageHistoryRepository extends JpaRepository<Sender
 			+ "						 "
 			+ "	) ", 
 			  nativeQuery = true)
-	public List<CountDTO> fetchSyncHistory();
+	public List<Count> fetchSyncHistory();
 	
 	@Query(value = " select table_.table_name as tableName, received as receivedItens, sent as sentItens, newer as  nonReceivedItens "
 			+ " from "
@@ -54,5 +54,5 @@ public interface SenderSyncMessageHistoryRepository extends JpaRepository<Sender
 			+ "						 "
 			+ "	) ", 
 			  nativeQuery = true)
-	public List<CountDTO> fetchSyncHistoryByDate(@Param("startDate") String startDate, @Param("endDate") String endDate);
+	public List<Count> fetchSyncHistoryByDate(@Param("startDate") String startDate, @Param("endDate") String endDate);
 }

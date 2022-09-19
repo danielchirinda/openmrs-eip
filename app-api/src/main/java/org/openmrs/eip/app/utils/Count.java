@@ -1,6 +1,6 @@
 package org.openmrs.eip.app.utils;
 
-public interface CountDTO {
+public interface Count {
 
 	public String getTableName();
 
