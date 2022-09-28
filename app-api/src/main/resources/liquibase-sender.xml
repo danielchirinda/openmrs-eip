@@ -335,7 +335,7 @@
 
     <changeSet author="wluyima" id="20220708-1500">
         <preConditions onFail="MARK_RAN">
-            <columnExists tableName="sender_retry_queue" columnName="date_created"/>
+            <columnExists tableName="sender_retry_queue" columnName="date_created" />
         </preConditions>
         <comment>Changing datatype of sender_retry_queue.date_created column to datetime(3)</comment>
 
