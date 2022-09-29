@@ -55,6 +55,10 @@ public class SenderSyncMessage extends AbstractEntity {
 	@Access(AccessType.FIELD)
 	private Date dateSent;
 	
+	@Column(name = "event_date")
+	@Access(AccessType.FIELD)
+	private Date eventDate;
+	
 	public String getTableName() {
 		return tableName;
 	}
@@ -116,6 +120,14 @@ public class SenderSyncMessage extends AbstractEntity {
 		this.dateSent = new Date();
 	}
 	
+	public Date getEventDate() {
+		return eventDate;
+	}
+
+	public void setEventDate(Date eventDate) {
+		this.eventDate = eventDate;
+	}
+
 	@Override
 	public String toString() {
 		return "SenderSyncMessage [tableName=" + tableName + ", identifier=" + identifier + ", operation=" + operation
