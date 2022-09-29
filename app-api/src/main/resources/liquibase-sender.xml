@@ -285,7 +285,7 @@
             <column name="status" type="VARCHAR(50)">
                 <constraints nullable="false" />
             </column>
-            <column name="date_changed" type="DATETIME(3)" />
+            <column name="date_sent" type="DATETIME(3)" />
         </createTable>
 
     </changeSet>
@@ -341,15 +341,5 @@
 
         <modifyDataType tableName="sender_retry_queue" columnName="date_created" newDataType="DATETIME(3)" />
     </changeSet>
-    
-    <changeSet author="dchirinda" id="20220928-1500">
-		<preConditions onFail="MARK_RAN">
-			<columnExists columnName="date_changed" tableName="sender_sync_message" />
-		</preConditions>
-		
-		<comment>Rename column name from date_changed to date_sent</comment>
-
-		<renameColumn columnDataType="DATETIME(3)" oldColumnName="date_changed" newColumnName="date_sent" tableName="sender_sync_message" />
-	</changeSet>
     
 </databaseChangeLog>
