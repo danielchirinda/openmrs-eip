@@ -389,6 +389,10 @@
 			<segment>
 				<source>Date Sent</source>
 				<target>Data Envio</target>
+		<unit id="receiver-dateSentByRemoteSite">
+			<segment>
+				<source>Date Sent By Remote Site</source>
+				<target></target>
 			</segment>
 		</unit>
 	</file>
