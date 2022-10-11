@@ -53,9 +53,14 @@ public final class DateUtils {
     }
     
     public static LocalDateTime dateToLocalDateTime(Date dateToConvert) {
-        return dateToConvert.toInstant()
-          .atZone(ZoneId.systemDefault())
-          .toLocalDateTime();
+        if (dateToConvert != null) {
+            return dateToConvert.toInstant()
+                    .atZone(ZoneId.systemDefault())
+                    .toLocalDateTime();
+        }
+        
+        return null;
+        
     }
 
 }
