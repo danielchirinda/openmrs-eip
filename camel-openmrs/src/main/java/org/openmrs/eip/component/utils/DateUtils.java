@@ -52,6 +52,11 @@ public final class DateUtils {
         return latestDateFromColl2 == null || latestDateFromColl1.isAfter(latestDateFromColl2);
     }
     
+    /**
+     *  Convert Date to LocalDateTime if the @param dateToConvert is not null
+     * @param dateToConvert
+     * @return
+     */
     public static LocalDateTime dateToLocalDateTime(Date dateToConvert) {
         if (dateToConvert != null) {
             return dateToConvert.toInstant()
