@@ -10,14 +10,17 @@ import static org.openmrs.eip.app.SyncConstants.MGT_TX_MGR;
 import static org.openmrs.eip.app.receiver.ReceiverConstants.EX_PROP_ENTITY_ID;
 import static org.openmrs.eip.app.receiver.ReceiverConstants.EX_PROP_FAILED_ENTITIES;
 import static org.openmrs.eip.app.receiver.ReceiverConstants.EX_PROP_MODEL_CLASS;
+import static org.openmrs.eip.app.receiver.ReceiverConstants.EX_PROP_MOVED_TO_ERROR_QUEUE;
 import static org.openmrs.eip.app.receiver.ReceiverConstants.EX_PROP_PAYLOAD;
 import static org.openmrs.eip.app.receiver.ReceiverConstants.EX_PROP_RETRY_ITEM;
 import static org.openmrs.eip.app.receiver.ReceiverConstants.EX_PROP_RETRY_ITEM_ID;
-import static org.openmrs.eip.app.receiver.ReceiverConstants.EX_PROP_SITE;
+import static org.openmrs.eip.app.receiver.ReceiverConstants.EX_PROP_SYNC_MESSAGE;
 import static org.openmrs.eip.app.receiver.ReceiverConstants.ROUTE_ID_ERROR_HANDLER;
 import static org.openmrs.eip.app.receiver.ReceiverConstants.URI_ERROR_HANDLER;
 import static org.openmrs.eip.app.route.TestUtils.getEntity;
 
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -32,6 +35,7 @@ import org.junit.Test;
 import org.openmrs.eip.app.AppUtils;
 import org.openmrs.eip.app.management.entity.ReceiverRetryQueueItem;
 import org.openmrs.eip.app.management.entity.SiteInfo;
+import org.openmrs.eip.app.management.entity.SyncMessage;
 import org.openmrs.eip.app.route.TestUtils;
 import org.openmrs.eip.component.exception.EIPException;
 import org.openmrs.eip.component.model.BaseModel;
@@ -91,8 +95,13 @@ public class ErrorHandlerRouteTest extends BaseReceiverRouteTest {
 		exchange.setProperty(EX_PROP_MODEL_CLASS, modelClass.getName());
 		exchange.setProperty(EX_PROP_ENTITY_ID, uuid);
 		exchange.setProperty(EX_PROP_PAYLOAD, payLoad);
-		SiteInfo siteInfo = TestUtils.getEntity(SiteInfo.class, 1L);
-		exchange.setProperty(EX_PROP_SITE, siteInfo);
+		SyncMessage syncMessage = new SyncMessage();
+		syncMessage.setSnapshot(true);
+		syncMessage.setMessageUuid("message-uuid");
+		syncMessage.setDateCreated(new Date());
+		syncMessage.setSite(TestUtils.getEntity(SiteInfo.class, 1L));
+		syncMessage.setDateSentBySender(LocalDateTime.now());
+		exchange.setProperty(EX_PROP_SYNC_MESSAGE, syncMessage);
 		
 		producerTemplate.send(URI_ERROR_HANDLER, exchange);
 		
@@ -107,8 +116,13 @@ public class ErrorHandlerRouteTest extends BaseReceiverRouteTest {
 		assertEquals(errorMsg, errorItem.getMessage());
 		assertEquals(1, errorItem.getAttemptCount().intValue());
 		assertNotNull(errorItem.getDateCreated());
-		assertEquals(siteInfo, errorItem.getSite());
+		assertEquals(syncMessage.getSite(), errorItem.getSite());
+		assertEquals(syncMessage.getDateSentBySender(), errorItem.getDateSentBySender());
+		assertEquals(syncMessage.getMessageUuid(), errorItem.getMessageUuid());
+		assertEquals(syncMessage.getSnapshot(), errorItem.getSnapshot());
+		assertEquals(syncMessage.getDateCreated(), errorItem.getDateReceived());
 		assertNull(errorItem.getDateChanged());
+		assertTrue(exchange.getProperty(EX_PROP_MOVED_TO_ERROR_QUEUE, Boolean.class));
 	}
 	
 	@Test
@@ -122,8 +136,10 @@ public class ErrorHandlerRouteTest extends BaseReceiverRouteTest {
 		exchange.setProperty(EX_PROP_MODEL_CLASS, modelClass.getName());
 		exchange.setProperty(EX_PROP_ENTITY_ID, uuid);
 		exchange.setProperty(EX_PROP_PAYLOAD, payLoad);
-		SiteInfo siteInfo = TestUtils.getEntity(SiteInfo.class, 1L);
-		exchange.setProperty(EX_PROP_SITE, siteInfo);
+		SyncMessage syncMessage = new SyncMessage();
+		syncMessage.setSite(TestUtils.getEntity(SiteInfo.class, 1L));
+		syncMessage.setDateSentBySender(LocalDateTime.now());
+		exchange.setProperty(EX_PROP_SYNC_MESSAGE, syncMessage);
 		
 		producerTemplate.send(URI_ERROR_HANDLER, exchange);
 		
@@ -175,8 +191,10 @@ public class ErrorHandlerRouteTest extends BaseReceiverRouteTest {
 		exchange.setProperty(EX_PROP_MODEL_CLASS, modelClass.getName());
 		exchange.setProperty(EX_PROP_ENTITY_ID, uuid);
 		exchange.setProperty(EX_PROP_PAYLOAD, payLoad);
-		SiteInfo siteInfo = TestUtils.getEntity(SiteInfo.class, 1L);
-		exchange.setProperty(EX_PROP_SITE, siteInfo);
+		SyncMessage syncMessage = new SyncMessage();
+		syncMessage.setSite(TestUtils.getEntity(SiteInfo.class, 1L));
+		syncMessage.setDateSentBySender(LocalDateTime.now());
+		exchange.setProperty(EX_PROP_SYNC_MESSAGE, syncMessage);
 		
 		producerTemplate.send(URI_ERROR_HANDLER, exchange);
 		

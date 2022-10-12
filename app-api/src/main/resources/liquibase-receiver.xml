@@ -1164,7 +1164,7 @@
         <comment>Add date_sent_by_sender column to receiver_sync_msg table</comment>
 
         <addColumn tableName="receiver_sync_msg">
-            <column name="date_sent_by_sender" type="DATETIME(3)" />
+            <column name="date_sent_by_sender" type="DATETIME" />
         </addColumn>
     </changeSet>
 
@@ -1178,7 +1178,9 @@
         </preConditions>
         <comment>Setting date_sent_by_sender for existing sync messages</comment>
 
-        <customChange class="org.openmrs.eip.app.management.receiver.SetDateSentBySenderChangeSet" />
+        <customChange class="org.openmrs.eip.app.management.receiver.SetDateSentBySenderChangeSet">
+            <param name="tableName" value="receiver_sync_msg" />
+        </customChange>
     </changeSet>
 
     <changeSet author="wluyima" id="20220926-1603">
@@ -1187,7 +1189,7 @@
         </preConditions>
         <comment>Adding not null constraint to receiver_sync_msg.date_sent_by_sender</comment>
 
-        <addNotNullConstraint tableName="receiver_sync_msg" columnName="date_sent_by_sender" columnDataType="DATETIME(3)" />
+        <addNotNullConstraint tableName="receiver_sync_msg" columnName="date_sent_by_sender" columnDataType="DATETIME" />
     </changeSet>
 
     <changeSet author="wluyima" id="20220928-1201">
@@ -1218,9 +1220,10 @@
                 <constraints nullable="false" />
             </column>
             <column name="message_uuid" type="VARCHAR(38)" />
-            <column name="date_sent_by_sender" type="DATETIME(3)">
+            <column name="date_sent_by_sender" type="DATETIME">
                 <constraints nullable="false" />
             </column>
+            <column name="date_received" type="DATETIME(3)" />
             <column name="date_created" type="DATETIME(3)">
                 <constraints nullable="false" />
             </column>
@@ -1233,21 +1236,6 @@
                                  referencedColumnNames="id" />
     </changeSet>
 
-    <changeSet author="wluyima" id="20220928-1202">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <columnExists columnName="status" tableName="receiver_sync_msg" />
-            </not>
-        </preConditions>
-        <comment>Add status column to receiver_sync_msg table</comment>
-
-        <addColumn tableName="receiver_sync_msg">
-            <column name="status" type="VARCHAR(50)" defaultValue="NEW">
-                <constraints nullable="false" />
-            </column>
-        </addColumn>
-    </changeSet>
-
     <changeSet author="wluyima" id="20220928-1203">
         <preConditions onFail="MARK_RAN">
             <columnExists columnName="status" tableName="receiver_sync_request" />
@@ -1255,6 +1243,162 @@
         <comment>Adding not null constraint to receiver_sync_request.status</comment>
 
         <addNotNullConstraint tableName="receiver_sync_request" columnName="status" columnDataType="VARCHAR(50)" />
+    </changeSet>
+
+    <changeSet author="wluyima" id="20220930-1201">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists columnName="date_sent_by_sender" tableName="receiver_retry_queue" />
+            </not>
+        </preConditions>
+        <comment>Add date_sent_by_sender column to receiver_retry_queue table</comment>
+
+        <addColumn tableName="receiver_retry_queue">
+            <column name="date_sent_by_sender" type="DATETIME" />
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="wluyima" id="20220930-1202">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists columnName="date_sent_by_sender" tableName="receiver_conflict_queue" />
+            </not>
+        </preConditions>
+        <comment>Add date_sent_by_sender column to receiver_conflict_queue table</comment>
+
+        <addColumn tableName="receiver_conflict_queue">
+            <column name="date_sent_by_sender" type="DATETIME" />
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="wluyima" id="20220930-1203">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <sqlCheck expectedResult="0">
+                    SELECT COUNT(*) FROM receiver_retry_queue WHERE date_sent_by_sender IS NULL
+                </sqlCheck>
+            </not>
+        </preConditions>
+        <comment>Setting date_sent_by_sender for existing messages in error queue</comment>
+
+        <customChange class="org.openmrs.eip.app.management.receiver.SetDateSentBySenderChangeSet">
+            <param name="tableName" value="receiver_retry_queue" />
+        </customChange>
+    </changeSet>
+
+    <changeSet author="wluyima" id="20220930-1204">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <sqlCheck expectedResult="0">
+                    SELECT COUNT(*) FROM receiver_conflict_queue WHERE date_sent_by_sender IS NULL
+                </sqlCheck>
+            </not>
+        </preConditions>
+        <comment>Setting date_sent_by_sender for existing messages in the conflict queue</comment>
+
+        <customChange class="org.openmrs.eip.app.management.receiver.SetDateSentBySenderChangeSet">
+            <param name="tableName" value="receiver_conflict_queue" />
+        </customChange>
+    </changeSet>
+
+    <changeSet author="wluyima" id="20220930-1205">
+        <preConditions onFail="MARK_RAN">
+            <columnExists columnName="date_sent_by_sender" tableName="receiver_retry_queue" />
+        </preConditions>
+        <comment>Adding not null constraint to receiver_retry_queue.date_sent_by_sender</comment>
+
+        <addNotNullConstraint tableName="receiver_retry_queue" columnName="date_sent_by_sender" columnDataType="DATETIME" />
+    </changeSet>
+
+    <changeSet author="wluyima" id="20220930-1206">
+        <preConditions onFail="MARK_RAN">
+            <columnExists columnName="date_sent_by_sender" tableName="receiver_conflict_queue" />
+        </preConditions>
+        <comment>Adding not null constraint to receiver_conflict_queue.date_sent_by_sender</comment>
+
+        <addNotNullConstraint tableName="receiver_conflict_queue" columnName="date_sent_by_sender" columnDataType="DATETIME" />
+    </changeSet>
+
+    <changeSet author="wluyima" id="20221005-1101">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists columnName="message_uuid" tableName="receiver_retry_queue" />
+            </not>
+        </preConditions>
+        <comment>Add message_uuid column to receiver_retry_queue table</comment>
+
+        <addColumn tableName="receiver_retry_queue">
+            <column name="message_uuid" type="VARCHAR(38)" />
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="wluyima" id="20221005-1102">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists columnName="message_uuid" tableName="receiver_conflict_queue" />
+            </not>
+        </preConditions>
+        <comment>Add message_uuid column to receiver_conflict_queue table</comment>
+
+        <addColumn tableName="receiver_conflict_queue">
+            <column name="message_uuid" type="VARCHAR(38)" />
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="wluyima" id="20221005-1103">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists columnName="is_snapshot" tableName="receiver_retry_queue" />
+            </not>
+        </preConditions>
+        <comment>Add is_snapshot column to receiver_retry_queue table</comment>
+
+        <addColumn tableName="receiver_retry_queue">
+            <column name="is_snapshot" type="BOOLEAN" defaultValueBoolean="false">
+                <constraints nullable="false" />
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="wluyima" id="20221005-1104">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists columnName="is_snapshot" tableName="receiver_conflict_queue" />
+            </not>
+        </preConditions>
+        <comment>Add is_snapshot column to receiver_conflict_queue table</comment>
+
+        <addColumn tableName="receiver_conflict_queue">
+            <column name="is_snapshot" type="BOOLEAN" defaultValueBoolean="false">
+                <constraints nullable="false" />
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="wluyima" id="20221007-1501">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists columnName="date_received" tableName="receiver_retry_queue" />
+            </not>
+        </preConditions>
+        <comment>Add date_received column to receiver_retry_queue table</comment>
+
+        <addColumn tableName="receiver_retry_queue">
+            <column name="date_received" type="DATETIME(3)" />
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="wluyima" id="20221007-1203">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists columnName="date_received" tableName="receiver_conflict_queue" />
+            </not>
+        </preConditions>
+        <comment>Add date_received column to receiver_conflict_queue table</comment>
+
+        <addColumn tableName="receiver_conflict_queue">
+            <column name="date_received" type="DATETIME(3)" />
+        </addColumn>
     </changeSet>
 
 </databaseChangeLog>

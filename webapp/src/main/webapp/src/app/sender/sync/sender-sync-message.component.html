@@ -8,6 +8,7 @@
 		<th i18n="@@common-message-id">Message Id</th>
 		<th i18n="@@common-operation">Operation</th>
 		<th i18n="@@common-status">Status</th>
+		<th i18n="@@common-eventDate">Event Date</th>
 		<th i18n="@@common-dateAdded">Date Added</th>
 		<th i18n="@@common-dateSent">Date Sent</th>
 	</tr>
@@ -27,8 +28,9 @@
 			<i class="bi-envelope-dash text-warning ui-cursor-pointer" [hidden]="m.status != 'NEW'" [ngbTooltip]="statusWaitingTemplate" [openDelay]="1000"></i>
 			<i class="bi-envelope-check-fill text-success ui-cursor-pointer" [hidden]="m.status != 'SENT'" [ngbTooltip]="statusSentTemplate" [openDelay]="1000"></i>
 		</td>
-		<td>{{m.dateCreated | date:'yyyy-MM-dd HH:mm:ss'}}</td>
-		<td>{{m.dateSent | date:'yyyy-MM-dd HH:mm:ss'}}</td>
+		<td container="body" ngbTooltip="{{m.eventDate | date:'EEEE, MMMM dd, y, h:mm:ss a'}}" [openDelay]="1000">{{m.eventDate | date:'MMM dd, y'}}</td>
+		<td container="body" ngbTooltip="{{m.dateCreated | date:'EEEE, MMMM dd, y, h:mm:ss a'}}" [openDelay]="1000">{{m.dateCreated | date:'MMM dd, y'}}</td>
+		<td container="body" ngbTooltip="{{m.dateSent | date:'EEEE, MMMM dd, y, h:mm:ss a'}}" [openDelay]="1000">{{m.dateSent | date:'MMM dd, y'}}</td>
 	</tr>
 	</tbody>
 </table>
@@ -41,3 +43,4 @@
 <ng-template #statusSentTemplate>
 	<span i18n="@@common-sent">Sent</span>
 </ng-template>
+

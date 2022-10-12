@@ -1,10 +1,14 @@
 package org.openmrs.eip.app.management.entity;
 
+import java.time.LocalDateTime;
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "receiver_conflict_queue")
@@ -19,6 +23,9 @@ public class ConflictQueueItem extends AbstractEntity {
 	@Column(nullable = false, updatable = false)
 	private String identifier;
 	
+	@Column(name = "is_snapshot", nullable = false, updatable = false)
+	private Boolean snapshot = false;
+	
 	@Column(name = "entity_payload", columnDefinition = "text", nullable = false)
 	private String entityPayload;
 	
@@ -28,6 +35,16 @@ public class ConflictQueueItem extends AbstractEntity {
 	@ManyToOne
 	@JoinColumn(name = "site_id", updatable = false)
 	private SiteInfo site;
+	
+	@NotNull
+	@Column(name = "date_sent_by_sender", nullable = false, updatable = false)
+	private LocalDateTime dateSentBySender;
+	
+	@Column(name = "message_uuid", length = 38, updatable = false)
+	private String messageUuid;
+	
+	@Column(name = "date_received", updatable = false)
+	private Date dateReceived;
 	
 	/**
 	 * Gets the modelClassName
@@ -63,6 +80,24 @@ public class ConflictQueueItem extends AbstractEntity {
 	 */
 	public void setIdentifier(String identifier) {
 		this.identifier = identifier;
+	}
+	
+	/**
+	 * Gets the snapshot
+	 *
+	 * @return the snapshot
+	 */
+	public Boolean getSnapshot() {
+		return snapshot;
+	}
+	
+	/**
+	 * Sets the snapshot
+	 *
+	 * @param snapshot the snapshot to set
+	 */
+	public void setSnapshot(Boolean snapshot) {
+		this.snapshot = snapshot;
 	}
 	
 	/**
@@ -119,10 +154,65 @@ public class ConflictQueueItem extends AbstractEntity {
 		this.site = site;
 	}
 	
+	/**
+	 * Gets the dateSentBySender
+	 *
+	 * @return the dateSentBySender
+	 */
+	public LocalDateTime getDateSentBySender() {
+		return dateSentBySender;
+	}
+	
+	/**
+	 * Sets the dateSentBySender
+	 *
+	 * @param dateSentBySender the dateSentBySender to set
+	 */
+	public void setDateSentBySender(LocalDateTime dateSentBySender) {
+		this.dateSentBySender = dateSentBySender;
+	}
+	
+	/**
+	 * Gets the messageUuid
+	 *
+	 * @return the messageUuid
+	 */
+	public String getMessageUuid() {
+		return messageUuid;
+	}
+	
+	/**
+	 * Sets the messageUuid
+	 *
+	 * @param messageUuid the messageUuid to set
+	 */
+	public void setMessageUuid(String messageUuid) {
+		this.messageUuid = messageUuid;
+	}
+	
+	/**
+	 * Gets the dateReceived
+	 *
+	 * @return the dateReceived
+	 */
+	public Date getDateReceived() {
+		return dateReceived;
+	}
+	
+	/**
+	 * Sets the dateReceived
+	 *
+	 * @param dateReceived the dateReceived to set
+	 */
+	public void setDateReceived(Date dateReceived) {
+		this.dateReceived = dateReceived;
+	}
+	
 	@Override
 	public String toString() {
 		return "ConflictQueueItem {identifier=" + identifier + ", modelClassName=" + modelClassName + ", payload="
-		        + entityPayload + ", site=" + site + "}";
+		        + entityPayload + ", snapshot=" + snapshot + ", site=" + site + ", dateSentBySender=" + dateSentBySender
+		        + ", messageUuid=" + messageUuid + ", dateReceived=" + dateReceived + "}";
 	}
 	
 }

@@ -4,9 +4,12 @@ import static java.util.Collections.singletonMap;
 import static java.util.Collections.synchronizedList;
 import static org.openmrs.eip.app.SyncConstants.MAX_COUNT;
 import static org.openmrs.eip.app.SyncConstants.WAIT_IN_SECONDS;
-import static org.openmrs.eip.app.receiver.ReceiverConstants.URI_MSG_PROCESSOR;
+import static org.openmrs.eip.app.receiver.ReceiverConstants.EX_PROP_MOVED_TO_CONFLICT_QUEUE;
+import static org.openmrs.eip.app.receiver.ReceiverConstants.EX_PROP_MOVED_TO_ERROR_QUEUE;
+import static org.openmrs.eip.app.receiver.ReceiverConstants.EX_PROP_MSG_PROCESSED;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
@@ -18,8 +21,10 @@ import org.apache.camel.component.jpa.JpaConstants;
 import org.openmrs.eip.app.AppUtils;
 import org.openmrs.eip.app.management.entity.SiteInfo;
 import org.openmrs.eip.app.management.entity.SyncMessage;
+import org.openmrs.eip.app.management.entity.receiver.ReceiverSyncArchive;
 import org.openmrs.eip.component.SyncContext;
 import org.openmrs.eip.component.camel.utils.CamelUtils;
+import org.openmrs.eip.component.exception.EIPException;
 import org.openmrs.eip.component.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,9 +42,8 @@ public class SiteMessageConsumer implements Runnable {
 	protected static final String ENTITY = SyncMessage.class.getSimpleName();
 	
 	//Order by dateCreated may be just in case the DB is migrated and id change
-	private static final String GET_JPA_URI = "jpa:" + ENTITY + "?query=SELECT m FROM " + ENTITY
-	        + " m WHERE m.status = 'NEW' AND m.site = :" + PARAM_SITE
-	        + " ORDER BY m.dateCreated ASC, m.id ASC &maximumResults=" + MAX_COUNT;
+	private static final String GET_JPA_URI = "jpa:" + ENTITY + "?query=SELECT m FROM " + ENTITY + " m WHERE m.site = :"
+	        + PARAM_SITE + " ORDER BY m.dateCreated ASC, m.id ASC &maximumResults=" + MAX_COUNT;
 	
 	private SiteInfo site;
 	
@@ -55,12 +59,15 @@ public class SiteMessageConsumer implements Runnable {
 	
 	private ReceiverActiveMqMessagePublisher messagePublisher;
 	
+	private String messageProcessorUri;
+	
 	/**
 	 * @param site sync messages from this site will be consumed by this instance
 	 * @param threadCount the number of threads to use to sync messages in parallel
 	 * @param msgExecutor {@link ExecutorService} instance to messages in parallel
 	 */
-	public SiteMessageConsumer(SiteInfo site, int threadCount, ExecutorService msgExecutor) {
+	public SiteMessageConsumer(String messageProcessorUri, SiteInfo site, int threadCount, ExecutorService msgExecutor) {
+		this.messageProcessorUri = messageProcessorUri;
 		this.site = site;
 		this.threadCount = threadCount;
 		this.msgExecutor = msgExecutor;
@@ -75,16 +82,16 @@ public class SiteMessageConsumer implements Runnable {
 		do {
 			Thread.currentThread().setName(site.getIdentifier());
 			
-			if (log.isDebugEnabled()) {
-				log.debug("Fetching next batch of messages to sync for site: " + site);
+			if (log.isTraceEnabled()) {
+				log.trace("Fetching next batch of messages to sync for site: " + site);
 			}
 			
 			try {
 				List<SyncMessage> syncMessages = fetchNextSyncMessageBatch();
 				
 				if (syncMessages.isEmpty()) {
-					if (log.isDebugEnabled()) {
-						log.debug("No sync message found from site: " + site);
+					if (log.isTraceEnabled()) {
+						log.trace("No sync message found from site: " + site);
 					}
 					
 					//TODO Make the delay configurable
@@ -218,7 +225,44 @@ public class SiteMessageConsumer implements Runnable {
 		
 		Exchange exchange = ExchangeBuilder.anExchange(producerTemplate.getCamelContext()).withBody(msg).build();
 		
-		CamelUtils.send(URI_MSG_PROCESSOR, exchange);
+		CamelUtils.send(messageProcessorUri, exchange);
+		
+		boolean movedToConflict = exchange.getProperty(EX_PROP_MOVED_TO_CONFLICT_QUEUE, false, Boolean.class);
+		boolean movedToError = exchange.getProperty(EX_PROP_MOVED_TO_ERROR_QUEUE, false, Boolean.class);
+		boolean msgProcessed = exchange.getProperty(EX_PROP_MSG_PROCESSED, false, Boolean.class);
+		
+		final Long id = msg.getId();
+		if (msgProcessed || movedToConflict || movedToError) {
+			if (msgProcessed) {
+				log.info("Archiving the sync message");
+				
+				ReceiverSyncArchive archive = new ReceiverSyncArchive(msg);
+				archive.setDateCreated(new Date());
+				if (log.isDebugEnabled()) {
+					log.debug("Saving sync archive");
+				}
+				
+				producerTemplate.sendBody("jpa:" + ReceiverSyncArchive.class.getSimpleName(), archive);
+				
+				if (log.isDebugEnabled()) {
+					log.debug("Successfully saved sync archive");
+				}
+			}
+			
+			if (log.isDebugEnabled()) {
+				log.debug("Removing from the sync message queue an item with id: " + id);
+			}
+			
+			producerTemplate.sendBody("jpa:" + ENTITY + "?query=DELETE FROM " + ENTITY + " WHERE id = " + id, null);
+			
+			if (log.isDebugEnabled()) {
+				log.debug("Successfully removed from sync message queue an item with id: " + id);
+			}
+		} else {
+			throw new EIPException("Something went wrong while processing sync message with id: " + id);
+		}
+		
+		log.info("Done processing message");
 	}
 	
 	/**
@@ -247,7 +291,7 @@ public class SiteMessageConsumer implements Runnable {
 	
 	protected String getThreadName(SyncMessage msg) {
 		return msg.getSite().getIdentifier() + "-" + AppUtils.getSimpleName(msg.getModelClassName()) + "-"
-		        + msg.getIdentifier() + "-" + msg.getId();
+		        + msg.getIdentifier() + "-" + msg.getMessageUuid() + "-" + msg.getId();
 	}
 	
 }
