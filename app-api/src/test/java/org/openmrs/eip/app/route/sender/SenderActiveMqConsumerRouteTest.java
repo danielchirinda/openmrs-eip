@@ -23,7 +23,6 @@ import org.openmrs.eip.app.management.entity.SenderSyncResponse;
 import org.openmrs.eip.app.management.entity.SyncRequestModel;
 import org.openmrs.eip.app.management.entity.SyncResponseModel;
 import org.openmrs.eip.app.route.TestUtils;
-import org.openmrs.eip.app.utils.DateUtilsTest;
 import org.openmrs.eip.component.utils.JsonUtils;
 import org.powermock.reflect.Whitebox;
 import org.springframework.test.context.TestPropertySource;
@@ -77,8 +76,8 @@ public class SenderActiveMqConsumerRouteTest extends BaseSenderRouteTest {
 	@Test
 	public void shouldProcessAndSaveASyncResponseMessage() {
 		final String messageUuid = "message-uuid";
-		final LocalDateTime dateSent = DateUtilsTest.generateDateWithPrecision();
-		final LocalDateTime dateReceived = DateUtilsTest.generateDateWithPrecision();;
+		final LocalDateTime dateSent = LocalDateTime.now();
+		final LocalDateTime dateReceived = LocalDateTime.now();
 		Exchange exchange = new DefaultExchange(camelContext);
 		SyncResponseModel responseData = new SyncResponseModel();
 		responseData.setMessageUuid(messageUuid);
