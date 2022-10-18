@@ -1,0 +1,68 @@
+	<div class="container mw-100">
+		<div class="col-6">
+			<div class="card">
+				<div class="card-header text-center">
+					<span class="h5" i18n="@@common-archived-itens">Archieved Items</span>
+				</div>
+				<ul class="list-group list-group-flush">
+					<li class="list-group-item text-secondary text-center" [hidden]="dashboard">
+						<span i18n="@@common-loading">Loading</span>...
+					</li>
+					<li class="list-group-item text-center"
+						[hidden]="!dashboard || dashboard?.entries.archivedMessages['totalCount'] > 0">
+						<i class="bi-check-circle-fill text-success"></i>&nbsp;
+						<span i18n="@@common-no-sync-msg">No items, everything looks good!</span>
+					</li>
+					<li class="list-group-item"
+						[hidden]="!dashboard || dashboard?.entries.archivedMessages['totalCount'] == 0">
+						<div class="h6 card-title ui-text-theme-secondary" i18n="@@common-quick-summary">Quick Summary
+						</div>
+						<div class="ml-3 mr-3">
+							<table class="text-dark">
+								<tr>
+									<td class="ui-no-wrap">
+										<span i18n="@@common-total-count">Total Count</span>
+									</td>
+									<td class="pl-2">
+										<span
+											class="badge border border-secondary">{{dashboard?.entries.archivedMessages['totalCount']}}</span>
+									</td>
+								</tr>
+							</table>
+						</div>
+					</li>
+					<li class="list-group-item"
+						[hidden]="!dashboard || dashboard?.entries.archivedMessages['totalCount'] == 0">
+						<div class="h6 card-title ui-text-theme-secondary" i18n="@@common-db-table-breakdown">Database
+							Table Breakdown</div>
+						<div class="ml-3 mr-3">
+							<receiver-table-stats
+								[tableStatsMap]="dashboard?.entries.archivedMessages['tableStatsMap']">
+							</receiver-table-stats>
+						</div>
+					</li>
+					<li class="list-group-item"
+						[hidden]="!dashboard || dashboard?.entries.archivedMessages['totalCount'] == 0">
+						<div class="h6 card-title ui-text-theme-secondary" i18n="@@common-status-breakdown">Status
+							Breakdown</div>
+						<div class="ml-2 mr-2">
+					<!-- 		<table class="text-dark">
+								<tr
+									*ngFor="let e of dashboard?.entries.archivedMessages['statusItemCountMap'] | keyvalue">
+									<td>
+										<span [hidden]="e.key != 'NEW'" i18n="@@common-waiting-to-sent">Waiting To Be
+											Sent</span>
+										<span [hidden]="e.key != 'SENT'" i18n="@@common-sent">Sent</span>
+									</td>
+									<td class="pl-2">
+										<span
+											[ngClass]="e.key == 'SENT' ? 'badge badge-success' : 'badge badge-warning'">{{e.value}}</span>
+									</td>
+								</tr>
+							</table> -->
+						</div>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>

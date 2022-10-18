@@ -12,6 +12,8 @@ import {ReceiverSyncMessageComponent} from './sync/receiver-sync-message.compone
 import {syncMessageReducer} from "./sync/state/sync-message.reducer";
 import { ArchiveComponent } from './archive/archive.component';
 import { syncArchiveReducer } from './archive/state/sync-archive.reducer';
+import { ReceiverDashboardComponent } from './dashboard/receiver-dashboard.component';
+import { ReceiverTableStatsComponent } from './stats/receiver-table-stats.component';
 
 @NgModule({
 	declarations: [
@@ -20,7 +22,9 @@ import { syncArchiveReducer } from './archive/state/sync-archive.reducer';
 		ConflictComponent,
 		SiteStatusComponent,
 		ReceiverSyncMessageComponent,
-		ArchiveComponent
+		ArchiveComponent,
+		ReceiverDashboardComponent,
+		ReceiverTableStatsComponent
 	],
 	imports: [
 		SharedModule,

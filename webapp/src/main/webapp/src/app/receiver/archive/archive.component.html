@@ -9,33 +9,22 @@
 					<tr>
 						<th i18n="@@common-table-name">Table Name</th>
 						<th i18n="@@common-identifier">Identifier</th>
-						<!-- <th i18n="@@common-operation">Operation</th> -->
 						<th i18n="@@common-district">District</th>
 						<th i18n="@@common-health-facility">Health Facility</th>
 						<th i18n="@@common-dateCreated">Date Created</th>
 						<th i18n="@@common-dateSent">Date Sent</th>
 						<th i18n="@@common-dateReceived">Date Reiceved</th>
-						<th i18n="@@common-dateReceived">Payload</th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr *ngFor="let e of events">
 						<td>{{e.modelClassName | modelClass}}</td>
 						<td>{{e.identifier}}</td>
-						<!--
-						<td>
-							<span class="text-success" [hidden]="e.operation != 'c'"
-								i18n="@@common-insert">Insert</span>
-							<span [hidden]="e != 'u'" i18n="@@common-update">Update</span>
-							<span class="text-danger" [hidden]="e.operation != 'd'" i18n="@@common-delete">Delete</span>
-						</td>
-						-->
 						<td>{{e.site?.name}}</td>
 						<td>{{e.site?.identifier}}</td>
-						<td>{{e.dateCreated | date:'yyyy-MM-dd'}}</td>
-						<td>{{e.dateSentBySender| date:'yyyy-MM-dd'}}</td>
-						<td>{{e.dateReceived | date:'yyyy-MM-dd'}}</td>
-						<td>{{e.entityPayload}}</td>
+						<td>{{e.dateCreated | date: 'MMM dd, y'}}</td>
+						<td container="body" ngbTooltip="{{e.dateSentBySender | date:'EEEE, MMMM dd, y, h:mm:ss a'}}" [openDelay]="1000">{{e.dateSentBySender| date:'MMM dd, y'}}</td>
+						<td container="body" ngbTooltip="{{e.dateReceived | date:'EEEE, MMMM dd, y, h:mm:ss a'}}" [openDelay]="1000" >{{e.dateReceived | date:'MMM dd, y'}}</td>
 					</tr>
 				</tbody>
 			</table>

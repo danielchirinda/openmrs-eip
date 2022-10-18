@@ -9,8 +9,6 @@ export class ReceiverSyncArchive extends BaseEntity {
 
 	messageUuid?: string;
 
-	entityPayload?: string;
-
 	site?: Site;
 
 	dateSentBySender?: string;
