@@ -403,5 +403,23 @@
 				<target>Data Evento</target>
 			</segment>
 		</unit>
+		<unit id="common-start">
+			<segment>
+				<source>Start Time</source>
+				<target>Data Inicio</target>
+			</segment>
+		</unit>
+		<unit id="common-end">
+			<segment>
+				<source>Start Time</source>
+				<target>Data Fim</target>
+			</segment>
+		</unit>
+		<unit id="common-archived-items">
+			<segment>
+				<source>Archived Itens</source>
+				<target>Eventos Arquivados</target>
+			</segment>
+		</unit>
 	</file>
 </xliff>

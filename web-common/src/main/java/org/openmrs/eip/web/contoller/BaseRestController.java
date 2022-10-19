@@ -12,6 +12,7 @@ import java.util.Map;
 
 import org.apache.camel.CamelContext;
 import org.apache.camel.ProducerTemplate;
+import org.openmrs.eip.web.utils.SenderSearch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +52,31 @@ public abstract class BaseRestController {
 		return producerTemplate.requestBody(
 		    "jpa:" + getName() + "?query=SELECT c FROM " + getName() + " c WHERE c.id = " + id, null, getClazz());
 	}
+	
+	public Map<String, Object> getByDateCreated(SenderSearch search) {
+
+	        Map<String, Object> results = new HashMap<String, Object>(2);
+	        List<Object> items;
+
+	        if (search.getStartDate().isBlank() || search.getEndDate().isBlank()) {
+	            items = on(camelContext).to("jpa:" + getName() + "?query=SELECT c FROM " + getName()
+	                    + " c &maximumResults=" + DEFAULT_MAX_COUNT).request(List.class);
+	        } else {
+	            items = on(camelContext).to("jpa:" + getName() + "?query=SELECT c FROM " + getName()
+	                    + " c  where c.dateCreated > '" + search.getStartDate() + "' and c.dateCreated < '"
+	                    + search.getEndDate() + "' &maximumResults=" + DEFAULT_MAX_COUNT).request(List.class);
+	        }
+
+	        if (items.size() > 0) {
+	            results.put(FIELD_COUNT, items.size());
+	            results.put(FIELD_ITEMS, items);
+	        } else {
+	            results.put(FIELD_ITEMS, Collections.emptyList());
+	        }
+
+	        return results;
+	}
+
 	
 	public String getName() {
 		return getClazz().getSimpleName();
