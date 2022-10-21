@@ -409,11 +409,17 @@
 				<target>Data Recebido</target>
 			</segment>
 		</unit>
-		<unit id="common-common-archived-itens">
+		<unit id="common-archived-itens">
 			<segment>
 				<source>Archived Itens</source>
 				<target>Eventos Arquivados</target>
 			</segment>
 		</unit>
-	</file>
+		<unit id="common-sync-Archive">
+			<segment>
+				<source>Archived Itens</source>
+				<target>Eventos Arquivados</target>
+			</segment>
+		</unit>
+	</file>sync-Archive
 </xliff>

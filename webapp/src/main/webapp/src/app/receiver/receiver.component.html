@@ -3,7 +3,7 @@
 		<li ngbNavItem="dashboard">
 			<a ngbNavLink i18n="@@common-dashboard">Dashboard</a>
 			<ng-template ngbNavContent>
-				<app-receiver-dashboard></app-receiver-dashboard>
+				<span class="font-italic">Running in Receiver Mode</span>
 			</ng-template>
 		</li>
 		<li ngbNavItem="syncMsgs">
@@ -31,7 +31,7 @@
 			</ng-template>
 		</li>
 		<li ngbNavItem="archive">
-			<a ngbNavLink i18n="@@sync-details">Sync Archive</a>
+			<a ngbNavLink i18n="@@sync-Archive">Sync Archive</a>
 			<ng-template ngbNavContent>
 				<app-archive></app-archive>
 			</ng-template>
