@@ -5,7 +5,7 @@ import { BaseListingComponent } from 'src/app/shared/base-listing.component';
 import { SearchEvent } from './search-event';
 import { SenderSyncArchive } from './sender-archive';
 import { SenderArchiveService } from './sender-archive.service';
-import { SenderArchivedLoaded } from './state/sender-archive.actions';
+import { SenderArchivedLoaded, UpdateSenderArchivedLoaded } from './state/sender-archive.actions';
 import { GET_SYNC_ARCHIVE } from './state/sender-archive.reducer';
 
 @Component({
@@ -62,7 +62,6 @@ export class SenderArchiveComponent extends BaseListingComponent implements OnIn
 
 	}
 
-
 	loadSenderArchiveData() {
 
 		this.service.getArchiveCountAndItems().subscribe(countAndItems => {
@@ -72,14 +71,9 @@ export class SenderArchiveComponent extends BaseListingComponent implements OnIn
 	}
 
 	searchByPeriod(event: Event) {
-		this.service.getSyncArchivedByDate(this.searchEvent).subscribe((countAndItems) => {
-			this.senderArchiveItens = []
-			this.senderArchiveItens = countAndItems.items;
-			this.count = countAndItems.count;
-			this.reRender();
+		this.service.getSyncArchivedByDate(this.searchEvent).subscribe(countAndItems => {
+			this.store.dispatch(new UpdateSenderArchivedLoaded(countAndItems));
 		});
-
-
 	}
 
 	ngOnDestroy(): void {

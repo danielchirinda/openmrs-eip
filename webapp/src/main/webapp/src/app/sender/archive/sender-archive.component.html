@@ -59,7 +59,6 @@
 						<th i18n="@@common-dateAdded">Date Created</th>
 						<th i18n="@@common-dateSent">Date Sent</th>
 						<th i18n="@@common-dateReceived">Date Reiceved</th>
-						<th i18n="@@common-status">Status</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -77,14 +76,6 @@
 						<td container="body" ngbTooltip="{{e.dateCreated | date:'EEEE, MMMM dd, y, h:mm:ss a'}}" [openDelay]="1000">{{e.dateCreated | date:'MMM dd, y'}}</td>
 						<td container="body" ngbTooltip="{{e.dateSent | date:'EEEE, MMMM dd, y, h:mm:ss a'}}" [openDelay]="1000">{{e.dateSent | date:'MMM dd, y'}}</td>
 						<td container="body" ngbTooltip="{{e.eventDate | date:'EEEE, MMMM dd, y, h:mm:ss a'}}" [openDelay]="1000">{{e.eventDate | date:'MMM dd, y'}}</td>
-						<td>
-							<span [hidden]="e.status != 'SENT'" i18n="@@common-event-sent">Sent</span>
-							<span [hidden]="e.status != 'RECEIVED'" i18n="@@common-event-new">
-								Received</span>
-							<span [hidden]="e.status != 'NEW'" i18n="@@common-event-received">
-								New</span>
-
-						</td>
 					</tr>
 				</tbody>
 			</table>

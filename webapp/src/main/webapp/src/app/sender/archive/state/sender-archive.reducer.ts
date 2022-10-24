@@ -13,6 +13,11 @@ export const GET_SYNC_ARCHIVE = createSelector(
 	state => state.countAndItems
 );
 
+export const UPDATE_SYNC_ARCHIVE = createSelector(
+	GET_SYNC_ARCHIVE_FEATURE_STATE,
+	state => state.countAndItems
+);
+
 
 const initialState: SenderArchiveState = {
 	countAndItems: new SenderSyncArchiveCountAndItems()
@@ -23,6 +28,13 @@ export function senderArchiveReducer(state = initialState, action: SenderArchive
 	switch (action.type) {
 
 		case SenderArchiveActionType.SENDER_ARCHIVED_LOADED:
+			return {
+				...state,
+				countAndItems: action.countAndItems
+			};
+		case SenderArchiveActionType.UPDATE_ARCHIVED_DATA:
+
+			state.countAndItems = action.countAndItems
 			return {
 				...state,
 				countAndItems: action.countAndItems

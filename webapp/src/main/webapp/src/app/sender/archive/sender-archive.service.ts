@@ -6,8 +6,6 @@ import { SenderSyncArchive } from "./sender-archive";
 import { SenderSyncArchiveCountAndItems } from "./sender-sync-archive-count-and-items";
 
 const RESOURCE_NAME = 'sender/archive';
-const RESOURCE_NAME_ENV_BY_DATE = RESOURCE_NAME + '/archived-event';
-
 
 @Injectable({
 	providedIn: 'root'
@@ -19,7 +17,7 @@ export class SenderArchiveService extends BaseService<SenderSyncArchive> {
 	}
 
 	getSyncArchivedByDate(searchEvent: SearchEvent): Observable<SenderSyncArchiveCountAndItems>{
-		return this.getWithParams(RESOURCE_NAME_ENV_BY_DATE, {startDate:searchEvent.startDate, endDate:searchEvent.endDate})
+		return this.getWithParams(RESOURCE_NAME, {startDate:searchEvent.startDate, endDate:searchEvent.endDate})
 	}
 
 }
