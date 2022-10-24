@@ -28,4 +28,9 @@ export abstract class BaseService<T extends BaseEntity> {
 	postCountAndItems(resource: string, data: any): Observable<BaseCountAndItems<T>> {
 		return this.httpClient.post<BaseCountAndItems<T>>(environment.apiBaseUrl + resource, data);
 	}
+
+	getWithParams(resource: string, paramsData: any): Observable<BaseCountAndItems<T>> {
+		return this.httpClient.get<BaseCountAndItems<T>>(environment.apiBaseUrl + resource, {
+			params: paramsData});
+	}
 }

@@ -19,7 +19,7 @@ export class SenderArchiveService extends BaseService<SenderSyncArchive> {
 	}
 
 	getSyncArchivedByDate(searchEvent: SearchEvent): Observable<SenderSyncArchiveCountAndItems>{
-		return this.postCountAndItems(RESOURCE_NAME_ENV_BY_DATE, searchEvent);
+		return this.getWithParams(RESOURCE_NAME_ENV_BY_DATE, {startDate:searchEvent.startDate, endDate:searchEvent.endDate})
 	}
 
 }

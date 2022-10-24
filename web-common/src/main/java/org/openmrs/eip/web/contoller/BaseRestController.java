@@ -53,24 +53,38 @@ public abstract class BaseRestController {
 		    "jpa:" + getName() + "?query=SELECT c FROM " + getName() + " c WHERE c.id = " + id, null, getClazz());
 	}
 	
-	public Map<String, Object> getByDateCreated(SenderSearch search) {
+	public Map<String, Object> getByDateCreated(String startDate, String endDate) {
 
 	        Map<String, Object> results = new HashMap<String, Object>(2);
 	        List<Object> items;
 
-	        if (search.getStartDate().isBlank() || search.getEndDate().isBlank()) {
+	        if (startDate.isBlank() && endDate.isBlank()) {
 	            items = on(camelContext).to("jpa:" + getName() + "?query=SELECT c FROM " + getName()
 	                    + " c &maximumResults=" + DEFAULT_MAX_COUNT).request(List.class);
-	        } else {
+	        }
+	        else if (!startDate.isBlank() && endDate.isBlank()) {
+	            
 	            items = on(camelContext).to("jpa:" + getName() + "?query=SELECT c FROM " + getName()
-	                    + " c  where c.dateCreated > '" + search.getStartDate() + "' and c.dateCreated < '"
-	                    + search.getEndDate() + "' &maximumResults=" + DEFAULT_MAX_COUNT).request(List.class);
+                   + " c  where c.dateCreated >= '" + startDate
+                   + "' &maximumResults=" + DEFAULT_MAX_COUNT).request(List.class);
+	            
+	        } else if (startDate.isBlank() && !endDate.isBlank()) {
+	         
+	            items = on(camelContext).to("jpa:" + getName() + "?query=SELECT c FROM " + getName()
+                    + " c  where c.dateCreated <= '" + endDate 
+                    + "' &maximumResults=" + DEFAULT_MAX_COUNT).request(List.class);
+	        }
+	        else {
+	            items = on(camelContext).to("jpa:" + getName() + "?query=SELECT c FROM " + getName()
+	                    + " c  where c.dateCreated >= '" + startDate + "' and c.dateCreated <= '"
+	                    + endDate + "' &maximumResults=" + DEFAULT_MAX_COUNT).request(List.class);
 	        }
 
 	        if (items.size() > 0) {
 	            results.put(FIELD_COUNT, items.size());
 	            results.put(FIELD_ITEMS, items);
 	        } else {
+	            results.put(FIELD_COUNT, 0 );
 	            results.put(FIELD_ITEMS, Collections.emptyList());
 	        }
 

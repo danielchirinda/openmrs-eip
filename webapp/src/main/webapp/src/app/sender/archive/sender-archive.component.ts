@@ -11,7 +11,6 @@ import { GET_SYNC_ARCHIVE } from './state/sender-archive.reducer';
 @Component({
 	selector: 'app-sender-archive',
 	templateUrl: './sender-archive.component.html',
-	styleUrls: ['./sender-archive.component.scss']
 })
 export class SenderArchiveComponent extends BaseListingComponent implements OnInit {
 

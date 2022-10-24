@@ -12,11 +12,10 @@ export class SenderSyncArchive extends BaseEntity {
 
 	requestUuid?: string;
 
-	status?: string;
-
 	dateSent?: string;
 
 	eventDate?: string;
 
+	snapshot?: boolean;
 
 }

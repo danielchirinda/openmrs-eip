@@ -16,7 +16,6 @@ import org.openmrs.eip.app.AppUtils;
 import org.openmrs.eip.app.management.entity.DebeziumEvent;
 import org.openmrs.eip.app.management.entity.SenderRetryQueueItem;
 import org.openmrs.eip.app.management.entity.SenderSyncMessage;
-import org.openmrs.eip.app.management.entity.sender.SenderSyncArchive;
 import org.openmrs.eip.component.SyncOperation;
 import org.openmrs.eip.component.SyncProfiles;
 import org.openmrs.eip.component.exception.EIPException;
@@ -35,8 +34,6 @@ public class SenderDashboardGenerator implements DashboardGenerator {
 	private static final String EVENT_ENTITY_NAME = DebeziumEvent.class.getSimpleName();
 	
 	private static final String SYNC_ENTITY_NAME = SenderSyncMessage.class.getSimpleName();
-	
-	private static final String ARCHIVE_ENTITY_NAME = SenderSyncArchive.class.getSimpleName();
 	
 	protected CamelContext camelContext;
 	
@@ -61,8 +58,6 @@ public class SenderDashboardGenerator implements DashboardGenerator {
 		final AtomicInteger totalSyncMsgCount = new AtomicInteger();
 		final Map<String, Map> syncMsgsTableStatsMap = new ConcurrentHashMap();
 		final Map statusItemCountMap = new ConcurrentHashMap();
-		final AtomicInteger totalArchivedCount = new AtomicInteger();
-        final Map<String, Map> synArchivedTableStatsMap = new ConcurrentHashMap();
 		
 		AppUtils.getTablesToSync().parallelStream().forEach(table -> {
 			Arrays.stream(SyncOperation.values()).parallel().forEach(op -> {
@@ -119,23 +114,6 @@ public class SenderDashboardGenerator implements DashboardGenerator {
 					syncMsgsTableStatsMap.get(tableName).put(op, msgCount);
 				}
 				
-                Integer archivedCount = on(camelContext)
-                        .to("jpa:" + ARCHIVE_ENTITY_NAME + "?query=SELECT count(*) FROM " + ARCHIVE_ENTITY_NAME
-                                + " WHERE LOWER(tableName) = '" + tableName + "' AND operation = '" + op + "'")
-                        .request(Integer.class);
-                
-                totalArchivedCount.addAndGet(archivedCount);
-                
-                if (archivedCount > 0) {
-                    synchronized (this) {
-                        if (synArchivedTableStatsMap.get(tableName) == null) {
-                            synArchivedTableStatsMap.put(tableName, new ConcurrentHashMap());
-                        }
-                    }
-                    
-                    synArchivedTableStatsMap.get(tableName).put(op, archivedCount);
-                }
-								
 			});
 		});
 		
@@ -200,12 +178,6 @@ public class SenderDashboardGenerator implements DashboardGenerator {
 		syncMessages.put("tableStatsMap", syncMsgsTableStatsMap);
 		syncMessages.put("statusItemCountMap", statusItemCountMap);
 		dashboard.add("syncMessages", syncMessages);
-		
-        Map<String, Object> archivedMessages = new ConcurrentHashMap();
-        archivedMessages.put("totalCount", totalArchivedCount);
-        archivedMessages.put("tableStatsMap", synArchivedTableStatsMap);
-        dashboard.add("archivedMessages", archivedMessages);
-		
 		
 		return dashboard;
 	}
