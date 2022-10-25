@@ -1,4 +1,4 @@
-import {createFeatureSelector, createSelector} from "@ngrx/store";
+import { createFeatureSelector, createSelector } from "@ngrx/store";
 import { SenderSyncArchiveCountAndItems } from "../sender-sync-archive-count-and-items";
 import { SenderArchiveAction, SenderArchiveActionType } from "./sender-archive.actions";
 
@@ -12,12 +12,6 @@ export const GET_SYNC_ARCHIVE = createSelector(
 	GET_SYNC_ARCHIVE_FEATURE_STATE,
 	state => state.countAndItems
 );
-
-export const UPDATE_SYNC_ARCHIVE = createSelector(
-	GET_SYNC_ARCHIVE_FEATURE_STATE,
-	state => state.countAndItems
-);
-
 
 const initialState: SenderArchiveState = {
 	countAndItems: new SenderSyncArchiveCountAndItems()
