@@ -32,12 +32,6 @@ export function senderArchiveReducer(state = initialState, action: SenderArchive
 				...state,
 				countAndItems: action.countAndItems
 			};
-		case SenderArchiveActionType.UPDATE_ARCHIVED_DATA:
-			return {
-				...state,
-				countAndItems: action.countAndItems
-			};
-
 		default:
 			return state;
 	}
