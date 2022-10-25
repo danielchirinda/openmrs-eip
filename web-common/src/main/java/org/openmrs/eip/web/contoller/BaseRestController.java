@@ -56,6 +56,9 @@ public abstract class BaseRestController {
 
 	        Map<String, Object> results = new HashMap<String, Object>(2);
 	        List<Object> items;
+	        
+            results.put(FIELD_COUNT, 0 );
+            results.put(FIELD_ITEMS, Collections.emptyList());
 
 	        if (startDate.isBlank() && endDate.isBlank()) {
 	            items = on(camelContext).to("jpa:" + getName() + "?query=SELECT c FROM " + getName()
@@ -82,9 +85,6 @@ public abstract class BaseRestController {
 	        if (items.size() > 0) {
 	            results.put(FIELD_COUNT, items.size());
 	            results.put(FIELD_ITEMS, items);
-	        } else {
-	            results.put(FIELD_COUNT, 0 );
-	            results.put(FIELD_ITEMS, Collections.emptyList());
 	        }
 
 	        return results;

@@ -18,4 +18,6 @@ export class SenderSyncArchive extends BaseEntity {
 
 	snapshot?: boolean;
 
+	dateReceivedByReceiver?: string;
+
 }

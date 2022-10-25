@@ -34,13 +34,12 @@ public class SenderSyncArchiveController extends BaseRestController {
 	
 	@GetMapping
 	@RequestMapping(params = {"startDate","endDate"})
-    public Map<String, Object> getArchivedEventByDate(@RequestParam(name = "startDate") String startDate,  @RequestParam( name = "endDate") String enddDate) {
+    public Map<String, Object> getArchivedEventByDate(@RequestParam(name = "startDate") String startDate,  @RequestParam( name = "endDate") String endDate) {
         if (log.isDebugEnabled()) {
             log.debug("Fetching archived events: ");
         }
 
-        log.info("Search Data : " + startDate + "End Date - " + enddDate);
-        return getByDateCreated(startDate, enddDate);
+        return getByDateCreated(startDate, endDate);
     }
 	
 }

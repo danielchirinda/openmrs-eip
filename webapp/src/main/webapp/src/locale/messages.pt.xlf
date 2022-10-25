@@ -421,5 +421,11 @@
 				<target>Eventos Arquivados</target>
 			</segment>
 		</unit>
+		<unit id="common-dateReceivedByReceiver">
+			<segment>
+				<source>Date Received By Receiver</source>
+				<target>Data de recebimento pelo Receptor</target>
+			</segment>
+		</unit>
 	</file>
 </xliff>

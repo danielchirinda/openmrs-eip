@@ -33,8 +33,6 @@ export function senderArchiveReducer(state = initialState, action: SenderArchive
 				countAndItems: action.countAndItems
 			};
 		case SenderArchiveActionType.UPDATE_ARCHIVED_DATA:
-
-			state.countAndItems = action.countAndItems
 			return {
 				...state,
 				countAndItems: action.countAndItems

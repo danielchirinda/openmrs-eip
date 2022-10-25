@@ -1,4 +1,6 @@
 import {Action} from "@ngrx/store";
+import { SearchEvent } from "../search-event";
+import { SenderArchiveService } from "../sender-archive.service";
 import { SenderSyncArchiveCountAndItems } from "../sender-sync-archive-count-and-items";
 
 export enum SenderArchiveActionType {
@@ -15,13 +17,12 @@ export class SenderArchivedLoaded implements Action {
 
 }
 
-export class UpdateSenderArchivedLoaded implements Action {
+export class SenderArchivedSearch implements Action {
 
 	readonly type = SenderArchiveActionType.UPDATE_ARCHIVED_DATA;
 
 	constructor(public countAndItems?: SenderSyncArchiveCountAndItems) {
 	}
-
 }
 
-export type SenderArchiveAction = SenderArchivedLoaded | UpdateSenderArchivedLoaded;
+export type SenderArchiveAction = SenderArchivedLoaded | SenderArchivedSearch;
