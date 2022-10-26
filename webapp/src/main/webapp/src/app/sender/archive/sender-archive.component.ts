@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { BaseListingComponent } from 'src/app/shared/base-listing.component';
-import { SearchEvent } from './search-event';
 import { SenderSyncArchive } from './sender-archive';
 import { SenderArchiveService } from './sender-archive.service';
+import { SenderSyncArchiveCountAndItems } from './sender-sync-archive-count-and-items';
 import { SenderArchivedLoaded} from './state/sender-archive.actions';
 import { GET_SYNC_ARCHIVE } from './state/sender-archive.reducer';
 
@@ -20,7 +20,9 @@ export class SenderArchiveComponent extends BaseListingComponent implements OnIn
 
 	senderArchiveItens?: SenderSyncArchive[];
 
-	searchEvent: SearchEvent = new SearchEvent;
+	startDate?: string;
+
+	endDate?: string;
 
 	constructor(private service: SenderArchiveService,
 		private store: Store) {
@@ -37,14 +39,6 @@ export class SenderArchiveComponent extends BaseListingComponent implements OnIn
 				this.reRender();
 			}
 		);
-
-		this.dtOptions = {
-			pagingType: 'full_numbers',
-			deferLoading: 12,
-			searching: true,
-			processing: true,
-		};
-
 		this.loadSenderArchiveData();
 	}
 
@@ -56,9 +50,12 @@ export class SenderArchiveComponent extends BaseListingComponent implements OnIn
 
 	searchByPeriod(event: Event) {
 		//Clear table content
-		this.store.dispatch(new SenderArchivedLoaded());
+		let syncArchiveItens = new SenderSyncArchiveCountAndItems();
+		syncArchiveItens.count = 0;
+		syncArchiveItens.items = [];
 
-		this.service.getSyncArchivedByDate(this.searchEvent).subscribe(countAndItems => {
+		this.store.dispatch(new SenderArchivedLoaded(syncArchiveItens));
+		this.service.getSyncArchivedByDate(this.startDate, this.endDate).subscribe(countAndItems => {
 			this.store.dispatch(new SenderArchivedLoaded(countAndItems));
 		});
 	}

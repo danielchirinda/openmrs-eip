@@ -22,11 +22,11 @@
 						</td>
 						<td colspan="4"></td>
 						<td colspan="2">
-							<input type="date" [(ngModel)]="searchEvent.startDate" />
+							<input type="date" [(ngModel)]="startDate" />
 						</td>
 						<td></td>
 						<td>
-							<input type="date" [(ngModel)]="searchEvent.endDate" />
+							<input type="date" [(ngModel)]="endDate" />
 						</td>
 					</tr>
 				</table>
@@ -44,9 +44,8 @@
 						<th i18n="@@common-table-name">Table Name</th>
 						<th i18n="@@common-identifier">Identifier</th>
 						<th i18n="@@common-operation">Operation</th>
-						<th i18n="@@common-dateAdded">Date Created</th>
-						<th i18n="@@common-dateSent">Date Sent</th>
 						<th i18n="@@common-eventDate">Event Date</th>
+						<th i18n="@@common-dateSent">Date Sent</th>
 						<th i18n="@@common-dateReceivedByReceiver">Date Received By Receiver</th>
 					</tr>
 				</thead>
@@ -60,12 +59,10 @@
 							<span [hidden]="e.operation != 'u'" i18n="@@common-update">Update</span>
 							<span class="text-danger" [hidden]="e.operation != 'd'" i18n="@@common-delete">Delete</span>
 						</td>
-						<td container="body" ngbTooltip="{{e.dateCreated | date:'EEEE, MMMM dd, y, h:mm:ss a'}}"
-							[openDelay]="1000">{{e.dateCreated | date:'MMM dd, y'}}</td>
+						<td container="body" ngbTooltip="{{e.eventDate | date:'EEEE, MMMM dd, y, h:mm:ss a'}}"
+						[openDelay]="1000">{{e.eventDate | date:'MMM dd, y'}}</td>
 						<td container="body" ngbTooltip="{{e.dateSent | date:'EEEE, MMMM dd, y, h:mm:ss a'}}"
 							[openDelay]="1000">{{e.dateSent | date:'MMM dd, y'}}</td>
-						<td container="body" ngbTooltip="{{e.eventDate | date:'EEEE, MMMM dd, y, h:mm:ss a'}}"
-							[openDelay]="1000">{{e.eventDate | date:'MMM dd, y'}}</td>
 						<td container="body" ngbTooltip="{{e.dateReceivedByReceiver | date:'EEEE, MMMM dd, y, h:mm:ss a'}}"
 							[openDelay]="1000">{{e.dateReceivedByReceiver | date:'MMM dd, y'}}</td>
 					</tr>
