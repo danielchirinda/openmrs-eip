@@ -5,14 +5,12 @@ import static org.junit.Assert.assertNotNull;
 import static org.openmrs.eip.app.SyncConstants.MGT_DATASOURCE_NAME;
 import static org.openmrs.eip.app.SyncConstants.MGT_TX_MGR;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import org.junit.Test;
 import org.openmrs.eip.app.management.entity.sender.SenderSyncArchive;
 import org.openmrs.eip.app.sender.BaseSenderTest;
-import org.openmrs.eip.component.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
