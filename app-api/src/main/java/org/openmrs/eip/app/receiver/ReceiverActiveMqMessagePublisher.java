@@ -10,6 +10,7 @@ import org.openmrs.eip.app.management.entity.ReceiverSyncRequest;
 import org.openmrs.eip.app.management.entity.SyncMessage;
 import org.openmrs.eip.app.management.entity.SyncResponseModel;
 import org.openmrs.eip.component.SyncProfiles;
+import org.openmrs.eip.component.utils.DateUtils;
 import org.openmrs.eip.component.utils.JsonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,18 +53,29 @@ public class ReceiverActiveMqMessagePublisher {
 	private <E extends AbstractEntity> void sendSyncResponse(E sourceEntity, String siteIdentifier, String messageUuid) {
 		if (StringUtils.isBlank(messageUuid)) {
 			if (log.isDebugEnabled()) {
-				log.debug("No correspondent messageUuid is present. Skipping sending sync response for: {}", sourceEntity);
+				log.debug("No correspondent messageUuid is present. Skipping sync response associated to: {}", sourceEntity);
 			}
+			
 			return;
-		}
-		
-		if (log.isDebugEnabled()) {
-			log.debug("Preparing sync response for: {}", sourceEntity);
 		}
 		
 		SyncResponseModel syncResponse = new SyncResponseModel();
 		syncResponse.setDateSentByReceiver(LocalDateTime.now());
 		syncResponse.setMessageUuid(messageUuid);
+		
+		if (sourceEntity instanceof SyncMessage) {
+			if (log.isDebugEnabled()) {
+				log.debug("Preparing sync response for: {}", sourceEntity);
+			}
+			
+			syncResponse.setDateReceived(DateUtils.dateToLocalDateTime(sourceEntity.getDateCreated()));
+		} else {
+			if (log.isDebugEnabled()) {
+				log.debug("Preparing sync response for message received in response to the request: {}", sourceEntity);
+			}
+			
+			syncResponse.setDateReceived(LocalDateTime.now());
+		}
 		
 		String payload = JsonUtils.marshall(syncResponse);
 		

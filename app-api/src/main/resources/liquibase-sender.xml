@@ -282,14 +282,12 @@
             <column name="snapshot" type="BOOLEAN">
                 <constraints nullable="false" />
             </column>
-            <column name="entity_data" type="TEXT" />
+            <column name="sync_data" type="TEXT" />
             <column name="status" type="VARCHAR(50)">
                 <constraints nullable="false" />
             </column>
             <column name="date_sent" type="DATETIME(3)" />
-            <column name="event_date" type="DATETIME(3)"> 
-            	<constraints nullable="false" />
-            </column>
+            <column name="event_date" type="DATETIME(3)" />
         </createTable>
 
     </changeSet>
@@ -310,6 +308,9 @@
                 <constraints nullable="false" />
             </column>
             <column name="message_uuid" type="VARCHAR(38)">
+                <constraints nullable="false" />
+            </column>
+            <column name="date_received_by_receiver" type="DATETIME" >
                 <constraints nullable="false" />
             </column>
             <column name="date_sent_by_receiver" type="DATETIME(3)">
@@ -383,18 +384,32 @@
             <column name="snapshot" type="BOOLEAN">
                 <constraints nullable="false" />
             </column>
-            <column name="entity_data" type="TEXT" />
+            <column name="sync_data" type="TEXT" />
             <column name="date_sent" type="DATETIME(3)">
                 <constraints nullable="false" />
             </column>
-            <column name="event_date" type="DATETIME(3)">
+            <column name="event_date" type="DATETIME(3)" />
+            <column name="date_received_by_receiver" type="DATETIME" >
                 <constraints nullable="false" />
             </column>
-            <column name="date_created" type="DATETIME(3)">
+            <column name="date_created" type="DATETIME">
                 <constraints nullable="false" />
             </column>
         </createTable>
 
+    </changeSet>
+
+    <changeSet author="wluyima" id="20221014-1200">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists columnName="event_date" tableName="sender_retry_queue" />
+            </not>
+        </preConditions>
+        <comment>Add event_date column to sender_retry_queue table</comment>
+
+        <addColumn tableName="sender_retry_queue">
+            <column name="event_date" type="DATETIME(3)" />
+        </addColumn>
     </changeSet>
     
 </databaseChangeLog>
