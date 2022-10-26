@@ -72,7 +72,7 @@ public abstract class BaseRestController {
            Long count = on(camelContext).to("jpa:" + getName() + "?query=SELECT count(c) FROM " + getName()
                    + " c " + whereClause).request(Long.class);
             
-           if (count <= 0) {
+           if (count == 0) {
                 results.put(FIELD_COUNT, 0 );
                 results.put(FIELD_ITEMS, Collections.emptyList());
                 return results; 

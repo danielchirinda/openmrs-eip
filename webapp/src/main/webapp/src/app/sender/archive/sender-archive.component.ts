@@ -1,12 +1,12 @@
-import { Component, OnInit } from '@angular/core';
-import { select, Store } from '@ngrx/store';
-import { Subscription } from 'rxjs';
-import { BaseListingComponent } from 'src/app/shared/base-listing.component';
-import { SenderSyncArchive } from './sender-archive';
-import { SenderArchiveService } from './sender-archive.service';
-import { SenderSyncArchiveCountAndItems } from './sender-sync-archive-count-and-items';
-import { SenderArchivedLoaded} from './state/sender-archive.actions';
-import { GET_SYNC_ARCHIVE } from './state/sender-archive.reducer';
+import {Component, OnInit} from '@angular/core';
+import {select, Store} from '@ngrx/store';
+import {Subscription} from 'rxjs';
+import {BaseListingComponent} from 'src/app/shared/base-listing.component';
+import {SenderSyncArchive} from './sender-archive';
+import {SenderArchiveService} from './sender-archive.service';
+import {SenderSyncArchiveCountAndItems} from './sender-sync-archive-count-and-items';
+import {SenderArchivedLoaded} from './state/sender-archive.actions';
+import {GET_SYNC_ARCHIVE} from './state/sender-archive.reducer';
 
 @Component({
 	selector: 'app-sender-archive',

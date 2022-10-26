@@ -39,7 +39,6 @@ public class SenderSyncArchiveController extends BaseRestController {
             log.debug("Fetching archived events: ");
         }
 
-        log.info("Fetching archived events:" + startDate +  "endDate" + endDate);
         return doSearchByPeriod(startDate, endDate);
     }
 	
