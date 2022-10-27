@@ -53,18 +53,18 @@ public abstract class BaseRestController {
 		    "jpa:" + getName() + "?query=SELECT c FROM " + getName() + " c WHERE c.id = " + id, null, getClazz());
 	}
 	
-	public Map<String, Object> doSearchByPeriod(String startDate, String endDate) {
+	public Map<String, Object> doSearchByPeriod(String startDate, String endDate, String property) {
 		
 		Map<String, Object> results = new HashMap<String, Object>(2);
 		
 		String whereClause = StringUtils.EMPTY;
 		
 		if (!startDate.isBlank()) {
-			whereClause = " where c.dateCreated >= '" + startDate + "'";
+			whereClause = " where c." + property + " >= '" + startDate + "'";
 		}
 		
 		if (!endDate.isBlank()) {
-			whereClause += (whereClause.isBlank() ? " where " : " and ") + " c.dateCreated <= '" + endDate + "'";
+			whereClause += (whereClause.isBlank() ? " where " : " and ") + " c." + property + " <= '" + endDate + "'";
 		}
 		
 		Long count = on(camelContext)
