@@ -3,7 +3,7 @@ import { SenderSyncArchiveCountAndItems } from "../sender-sync-archive-count-and
 import { SenderArchiveAction, SenderArchiveActionType } from "./sender-archive.actions";
 
 export interface SenderArchiveState {
-	countAndItems?: SenderSyncArchiveCountAndItems;
+	countAndItems: SenderSyncArchiveCountAndItems;
 }
 
 const GET_SYNC_ARCHIVE_FEATURE_STATE = createFeatureSelector<SenderArchiveState>('senderArchiveQueue');

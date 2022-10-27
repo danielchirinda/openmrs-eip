@@ -18,7 +18,7 @@ export class SenderArchiveComponent extends BaseListingComponent implements OnIn
 
 	loadedSubscription?: Subscription;
 
-	senderArchiveItens?: SenderSyncArchive[];
+	senderArchiveItems?: SenderSyncArchive[];
 
 	startDate?: string;
 
@@ -31,11 +31,10 @@ export class SenderArchiveComponent extends BaseListingComponent implements OnIn
 
 	ngOnInit() {
 		this.init();
-
 		this.loadedSubscription = this.store.pipe(select(GET_SYNC_ARCHIVE)).subscribe(
 			countAndItems => {
-				this.count = countAndItems?.count;
-				this.senderArchiveItens = countAndItems?.items
+				this.count = countAndItems.count;
+				this.senderArchiveItems = countAndItems.items
 				this.reRender();
 			}
 		);
@@ -55,7 +54,7 @@ export class SenderArchiveComponent extends BaseListingComponent implements OnIn
 		syncArchiveItens.items = [];
 
 		this.store.dispatch(new SenderArchivedLoaded(syncArchiveItens));
-		this.service.getSyncArchivedByDate(this.startDate, this.endDate).subscribe(countAndItems => {
+		this.service.doSearchByPeriod(this.startDate, this.endDate).subscribe(countAndItems => {
 			this.store.dispatch(new SenderArchivedLoaded(countAndItems));
 		});
 	}
