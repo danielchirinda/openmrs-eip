@@ -2,6 +2,12 @@ package org.openmrs.eip.app;
 
 public class SyncConstants {
 	
+	public static final String DBSYNC_PROP_FILE = "dbsync.properties";
+	
+	public static final String DBSYNC_PROP_VERSION = "version";
+	
+	public static final String DBSYNC_PROP_BUILD_NUMBER = "build.number";
+	
 	public static final String FOLDER_DIST = "distribution";
 	
 	public static final String FOLDER_ROUTES = "routes";
