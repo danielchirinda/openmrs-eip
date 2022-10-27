@@ -54,39 +54,37 @@ public abstract class BaseRestController {
 	}
 	
 	public Map<String, Object> doSearchByPeriod(String startDate, String endDate) {
-
-	    Map<String, Object> results = new HashMap<String, Object>(2);
-	    
-           String whereClause = StringUtils.EMPTY;
-            
-           if (!startDate.isBlank()) {
-                whereClause = " where c.dateCreated >= '" + startDate
-                        + "'";
-           }
-            
-           if (!endDate.isBlank()) {
-                whereClause += (whereClause.isBlank() ? " where " : " and ") + " c.dateCreated <= '" + endDate
-                        + "'";
-           }
-
-           Long count = on(camelContext).to("jpa:" + getName() + "?query=SELECT count(c) FROM " + getName()
-                   + " c " + whereClause).request(Long.class);
-            
-           if (count == 0) {
-                results.put(FIELD_COUNT, 0 );
-                results.put(FIELD_ITEMS, Collections.emptyList());
-                return results; 
-           }
-            
-           List<Object>  items = on(camelContext).to("jpa:" + getName() + "?query=SELECT c FROM " + getName()
-                   + " c " + whereClause + " &maximumResults=" + DEFAULT_MAX_COUNT).request(List.class);
-
-           results.put(FIELD_COUNT, items.size());
-           results.put(FIELD_ITEMS, items);
-
-	       return results;
+		
+		Map<String, Object> results = new HashMap<String, Object>(2);
+		
+		String whereClause = StringUtils.EMPTY;
+		
+		if (!startDate.isBlank()) {
+			whereClause = " where c.dateCreated >= '" + startDate + "'";
+		}
+		
+		if (!endDate.isBlank()) {
+			whereClause += (whereClause.isBlank() ? " where " : " and ") + " c.dateCreated <= '" + endDate + "'";
+		}
+		
+		Long count = on(camelContext)
+		        .to("jpa:" + getName() + "?query=SELECT count(c) FROM " + getName() + " c " + whereClause)
+		        .request(Long.class);
+		
+		if (count == 0) {
+			results.put(FIELD_COUNT, 0);
+			results.put(FIELD_ITEMS, Collections.emptyList());
+			return results;
+		}
+		
+		List<Object> items = on(camelContext).to("jpa:" + getName() + "?query=SELECT c FROM " + getName() + " c "
+		        + whereClause + " &maximumResults=" + DEFAULT_MAX_COUNT).request(List.class);
+		
+		results.put(FIELD_COUNT, items.size());
+		results.put(FIELD_ITEMS, items);
+		
+		return results;
 	}
-
 	
 	public String getName() {
 		return getClazz().getSimpleName();
