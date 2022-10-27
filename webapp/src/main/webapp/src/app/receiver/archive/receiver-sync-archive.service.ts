@@ -15,4 +15,8 @@ export class ReceiverSyncArchiveService extends BaseService<ReceiverSyncArchive>
 		return this.getCountAndItems(RESOURCE_NAME);
 	}
 
+	doSearchByPeriod(startDate: string | undefined, endDate: string | undefined): Observable<ReceiverSyncArchiveCountAndItems> {
+		return this.searchCountAndItems(RESOURCE_NAME, { startDate: startDate, endDate: endDate })
+	}
+
 }

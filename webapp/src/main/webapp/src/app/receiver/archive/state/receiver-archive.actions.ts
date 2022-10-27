@@ -1,17 +1,17 @@
 import {Action} from "@ngrx/store";
 import { ReceiverSyncArchiveCountAndItems } from "../receiver-sync-archive-count-and-items";
 
-export enum SyncArchiveActionType {
+export enum ReceiverArchiveActionType {
 	SYNC_ARCHIVE_LOADED = 'SYNC_ARCHIVE_LOADED',
 }
 
-export class SyncArchiveLoaded implements Action {
+export class ReceiverArchiveLoaded implements Action {
 
-	readonly type = SyncArchiveActionType.SYNC_ARCHIVE_LOADED;
+	readonly type = ReceiverArchiveActionType.SYNC_ARCHIVE_LOADED;
 
 	constructor(public countAndItems?: ReceiverSyncArchiveCountAndItems) {
 	}
 
 }
 
-export type SyncArchiveAction = SyncArchiveLoaded;
+export type ReceiverArchiveAction = ReceiverArchiveLoaded;

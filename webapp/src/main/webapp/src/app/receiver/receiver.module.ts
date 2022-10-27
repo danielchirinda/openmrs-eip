@@ -10,9 +10,10 @@ import {SiteStatusComponent} from "./status/site-status.component";
 import {siteStatusReducer} from "./status/state/site-status.reducer";
 import {ReceiverSyncMessageComponent} from './sync/receiver-sync-message.component';
 import {syncMessageReducer} from "./sync/state/sync-message.reducer";
-import { ArchiveComponent } from './archive/archive.component';
-import { syncArchiveReducer } from './archive/state/sync-archive.reducer';
+import { ReceiverArchiveComponent } from './archive/receiver-archive.component';
+import { syncArchiveReducer } from './archive/state/receiver-archive.reducer';
 import { ReceiverTableStatsComponent } from './stats/receiver-table-stats.component';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
 	declarations: [
@@ -21,7 +22,7 @@ import { ReceiverTableStatsComponent } from './stats/receiver-table-stats.compon
 		ConflictComponent,
 		SiteStatusComponent,
 		ReceiverSyncMessageComponent,
-		ArchiveComponent,
+		ReceiverArchiveComponent,
 		ReceiverTableStatsComponent
 	],
 	imports: [
@@ -30,7 +31,8 @@ import { ReceiverTableStatsComponent } from './stats/receiver-table-stats.compon
 		StoreModule.forFeature('receiverErrorQueue', receiverErrorReducer),
 		StoreModule.forFeature('siteStatuses', siteStatusReducer),
 		StoreModule.forFeature('syncMsgQueue', syncMessageReducer),
-		StoreModule.forFeature('syncArquiveQueue', syncArchiveReducer)
+		StoreModule.forFeature('syncArquiveQueue', syncArchiveReducer),
+		FormsModule
 	], exports: [ReceiverComponent]
 })
 

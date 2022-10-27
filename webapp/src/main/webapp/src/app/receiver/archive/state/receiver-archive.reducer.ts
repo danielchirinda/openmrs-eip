@@ -1,27 +1,27 @@
 import {createFeatureSelector, createSelector} from "@ngrx/store";
 import {ReceiverSyncArchiveCountAndItems} from "../receiver-sync-archive-count-and-items";
-import {SyncArchiveAction, SyncArchiveActionType} from "./sync-archive.actions";
+import {ReceiverArchiveAction, ReceiverArchiveActionType} from "./receiver-archive.actions";
 
-export interface SyncArchiveState {
+export interface ReceiverArchiveState {
 	countAndItems: ReceiverSyncArchiveCountAndItems;
 }
 
-const GET_SYNC_ARCHIVE_FEATURE_STATE = createFeatureSelector<SyncArchiveState>('syncArquiveQueue');
+const GET_SYNC_ARCHIVE_FEATURE_STATE = createFeatureSelector<ReceiverArchiveState>('syncArquiveQueue');
 
 export const GET_SYNC_ARCHIVE = createSelector(
 	GET_SYNC_ARCHIVE_FEATURE_STATE,
 	state => state.countAndItems
 );
 
-const initialState: SyncArchiveState = {
+const initialState: ReceiverArchiveState = {
 	countAndItems: new ReceiverSyncArchiveCountAndItems()
 };
 
-export function syncArchiveReducer(state = initialState, action: SyncArchiveAction) {
+export function syncArchiveReducer(state = initialState, action: ReceiverArchiveAction) {
 
 	switch (action.type) {
 
-		case SyncArchiveActionType.SYNC_ARCHIVE_LOADED:
+		case ReceiverArchiveActionType.SYNC_ARCHIVE_LOADED:
 			return {
 				...state,
 				countAndItems: action.countAndItems
