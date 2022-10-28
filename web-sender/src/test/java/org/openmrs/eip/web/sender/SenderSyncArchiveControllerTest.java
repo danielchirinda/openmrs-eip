@@ -40,9 +40,6 @@ public class SenderSyncArchiveControllerTest extends BaseSenderTest {
 		Map results = controller.doSearchByPeriod(stardDate, endDate, SenderSyncArchive.EVENT_DATE);
 		assertEquals(1, results.get("count"));
 		assertEquals(2, results.size());
-		assertNotNull(((List<SenderSyncArchive>) results.get("items")).get(0).getDateCreated());
-		assertNotNull(((List<SenderSyncArchive>) results.get("items")).get(0).getEventDate());
-		assertNotNull(((List<SenderSyncArchive>) results.get("items")).get(0).getDateSent());
 	}
 	
 	@Test
@@ -54,11 +51,8 @@ public class SenderSyncArchiveControllerTest extends BaseSenderTest {
 		Map results = controller.doSearchByPeriod(stardDate, endDate, SenderSyncArchive.EVENT_DATE);
 		assertEquals(1, results.get("count"));
 		assertEquals(2, results.size());
-		assertEquals("e2bc25aa-1d5f-11e0-b929-000c29ad1d07",
-		    ((List<SenderSyncArchive>) results.get("items")).get(0).getIdentifier());
-		assertNotNull(((List<SenderSyncArchive>) results.get("items")).get(0).getDateCreated());
-		assertNotNull(((List<SenderSyncArchive>) results.get("items")).get(0).getEventDate());
-		assertNotNull(((List<SenderSyncArchive>) results.get("items")).get(0).getDateSent());
+		assertEquals("4316548b-8803-43b7-bd10-49f26bc26dde",
+		    ((List<SenderSyncArchive>) results.get("items")).get(0).getMessageUuid());
 	}
 	
 	@Test
@@ -72,6 +66,7 @@ public class SenderSyncArchiveControllerTest extends BaseSenderTest {
 		assertEquals(0, results.get("count"));
 		assertEquals(0, ((List) results.get("items")).size());
 		assertEquals(2, results.size());
+		
 	}
 	
 }
