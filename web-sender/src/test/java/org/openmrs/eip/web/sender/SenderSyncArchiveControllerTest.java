@@ -34,37 +34,44 @@ public class SenderSyncArchiveControllerTest extends BaseSenderTest {
 	@Test
 	public void shouldDosearchByEventDate() {
 		
-		// Do Search with startDate and EndDate
 		String stardDate = "2022-10-25";
 		String endDate = "2022-10-30";
 		
-		Map results = controller.doSearchByPeriod(stardDate, endDate, Constants.EVENT_DATE);
+		Map results = controller.doSearchByPeriod(stardDate, endDate, SenderSyncArchive.EVENT_DATE);
 		assertEquals(1, results.get("count"));
+		assertEquals(2, results.size());
 		assertNotNull(((List<SenderSyncArchive>) results.get("items")).get(0).getDateCreated());
 		assertNotNull(((List<SenderSyncArchive>) results.get("items")).get(0).getEventDate());
 		assertNotNull(((List<SenderSyncArchive>) results.get("items")).get(0).getDateSent());
+	}
+	
+	@Test
+	public void shouldDosearchByEventDateWithEndDate() {
 		
-		// Do Search with endDate
-		stardDate = "";
-		endDate = "2022-10-23";
+		String stardDate = "";
+		String endDate = "2022-10-23";
 		
-		Map result = controller.doSearchByPeriod(stardDate, endDate, Constants.EVENT_DATE);
+		Map results = controller.doSearchByPeriod(stardDate, endDate, SenderSyncArchive.EVENT_DATE);
 		assertEquals(1, results.get("count"));
+		assertEquals(2, results.size());
 		assertEquals("e2bc25aa-1d5f-11e0-b929-000c29ad1d07",
-		    ((List<SenderSyncArchive>) result.get("items")).get(0).getIdentifier());
-		assertNotNull(((List<SenderSyncArchive>) result.get("items")).get(0).getDateCreated());
-		assertNotNull(((List<SenderSyncArchive>) result.get("items")).get(0).getEventDate());
-		assertNotNull(((List<SenderSyncArchive>) result.get("items")).get(0).getDateSent());
+		    ((List<SenderSyncArchive>) results.get("items")).get(0).getIdentifier());
+		assertNotNull(((List<SenderSyncArchive>) results.get("items")).get(0).getDateCreated());
+		assertNotNull(((List<SenderSyncArchive>) results.get("items")).get(0).getEventDate());
+		assertNotNull(((List<SenderSyncArchive>) results.get("items")).get(0).getDateSent());
+	}
+	
+	@Test
+	public void shouldDosearchByEventDateWithStartDate() {
 		
 		// Do Search with startDate
-		stardDate = "2022-10-30";
-		endDate = "";
+		String stardDate = "2022-10-30";
+		String endDate = "";
 		
-		Map res = controller.doSearchByPeriod(stardDate, endDate, Constants.EVENT_DATE);
-		assertEquals(0, res.get("count"));
-		assertEquals(0, ((List) res.get("items")).size());
-		assertEquals(2, res.size());
-		
+		Map results = controller.doSearchByPeriod(stardDate, endDate, SenderSyncArchive.EVENT_DATE);
+		assertEquals(0, results.get("count"));
+		assertEquals(0, ((List) results.get("items")).size());
+		assertEquals(2, results.size());
 	}
 	
 }
