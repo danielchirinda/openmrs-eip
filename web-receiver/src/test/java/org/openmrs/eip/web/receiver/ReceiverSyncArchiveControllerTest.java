@@ -43,34 +43,34 @@ public class ReceiverSyncArchiveControllerTest extends BaseReceiverTest {
 		assertNotNull(((List<ReceiverSyncArchive>) results.get("items")).get(0).getDateReceived());
 		assertNotNull(((List<ReceiverSyncArchive>) results.get("items")).get(0).getDateSentBySender());
 	}
-
+	
 	@Test
 	public void shouldDoSearchByDateReceivedWithEndDate() {
 		// Do Search with EndDate
 		String stardDate = "";
 		String endDate = "2022-10-23";
-
+		
 		Map result = controller.doSearchByPeriod(stardDate, endDate, ReceiverSyncArchive.DATE_CREATED);
 		assertEquals(1, result.get("count"));
 		assertEquals("8cd540b1-dbcc-4dc0-bb85-d5d2763bbw6e",
-				((List<ReceiverSyncArchive>) result.get("items")).get(0).getIdentifier());
+		    ((List<ReceiverSyncArchive>) result.get("items")).get(0).getIdentifier());
 		assertNotNull(((List<ReceiverSyncArchive>) result.get("items")).get(0).getDateCreated());
 		assertNotNull(((List<ReceiverSyncArchive>) result.get("items")).get(0).getDateReceived());
 		assertNotNull(((List<ReceiverSyncArchive>) result.get("items")).get(0).getDateSentBySender());
-
+		
 	}
-
+	
 	@Test
 	public void shouldDoSearchByDateReceivedWithStartDate() {
 		// Do Search with startDate
 		String stardDate = "2022-10-30";
 		String endDate = "";
-
+		
 		Map res = controller.doSearchByPeriod(stardDate, endDate, ReceiverSyncArchive.DATE_CREATED);
 		assertEquals(0, res.get("count"));
 		assertEquals(0, ((List) res.get("items")).size());
 		assertEquals(2, res.size());
-
+		
 	}
-
-	}
+	
+}
