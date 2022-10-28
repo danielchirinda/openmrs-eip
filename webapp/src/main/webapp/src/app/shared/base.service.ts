@@ -25,7 +25,7 @@ export abstract class BaseService<T extends BaseEntity> {
 		return this.httpClient.delete<T>(environment.apiBaseUrl + resource + '/' + entity.id);
 	}
 
-	searchCountAndItems(resource: string, paramsData: any): Observable<BaseCountAndItems<T>> {
+	getCountAndItemsWithParams(resource: string, paramsData: any): Observable<BaseCountAndItems<T>> {
 		return this.httpClient.get<BaseCountAndItems<T>>(environment.apiBaseUrl + resource, {
 			params: paramsData});
 	}
