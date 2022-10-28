@@ -59,12 +59,13 @@ public abstract class BaseRestController {
 		
 		String whereClause = StringUtils.EMPTY;
 		
-		if (!startDate.isBlank()) {
+		if (!StringUtils.isBlank(startDate)) {
 			whereClause = " where c." + property + " >= '" + startDate + "'";
 		}
 		
-		if (!endDate.isBlank()) {
-			whereClause += (whereClause.isBlank() ? " where " : " and ") + " c." + property + " <= '" + endDate + "'";
+		if (!StringUtils.isBlank(endDate)) {
+			whereClause += (StringUtils.isBlank(whereClause) ? " where " : " and ") + " c." + property + " <= '" + endDate
+			        + "'";
 		}
 		
 		Long count = on(camelContext)

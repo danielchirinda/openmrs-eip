@@ -54,7 +54,7 @@ export class SenderArchiveComponent extends BaseListingComponent implements OnIn
 		syncArchiveItens.items = [];
 
 		this.store.dispatch(new SenderArchivedLoaded(syncArchiveItens));
-		this.service.doSearchByPeriod(this.startDate, this.endDate).subscribe(countAndItems => {
+		this.service.searchCountAndItems(this.startDate, this.endDate).subscribe(countAndItems => {
 			this.store.dispatch(new SenderArchivedLoaded(countAndItems));
 		});
 	}

@@ -32,8 +32,9 @@ public class SenderSyncArchiveControllerTest extends BaseSenderTest {
 	}
 	
 	@Test
-	public void shouldDosearchByPeriod() {
+	public void shouldDosearchByEventDate() {
 		
+		// Do Search with startDate and EndDate
 		String stardDate = "2022-10-25";
 		String endDate = "2022-10-30";
 		
@@ -43,6 +44,7 @@ public class SenderSyncArchiveControllerTest extends BaseSenderTest {
 		assertNotNull(((List<SenderSyncArchive>) results.get("items")).get(0).getEventDate());
 		assertNotNull(((List<SenderSyncArchive>) results.get("items")).get(0).getDateSent());
 		
+		// Do Search with endDate
 		stardDate = "";
 		endDate = "2022-10-23";
 		
@@ -54,13 +56,14 @@ public class SenderSyncArchiveControllerTest extends BaseSenderTest {
 		assertNotNull(((List<SenderSyncArchive>) result.get("items")).get(0).getEventDate());
 		assertNotNull(((List<SenderSyncArchive>) result.get("items")).get(0).getDateSent());
 		
+		// Do Search with startDate
 		stardDate = "2022-10-30";
 		endDate = "";
 		
 		Map res = controller.doSearchByPeriod(stardDate, endDate, Constants.EVENT_DATE);
 		assertEquals(0, res.get("count"));
 		assertEquals(0, ((List) res.get("items")).size());
-		assertEquals(2, result.size());
+		assertEquals(2, res.size());
 		
 	}
 	
