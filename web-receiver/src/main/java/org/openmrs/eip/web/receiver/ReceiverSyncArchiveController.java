@@ -3,7 +3,6 @@ package org.openmrs.eip.web.receiver;
 import java.util.Map;
 
 import org.openmrs.eip.app.management.entity.receiver.ReceiverSyncArchive;
-import org.openmrs.eip.component.Constants;
 import org.openmrs.eip.web.RestConstants;
 import org.openmrs.eip.web.contoller.BaseRestController;
 import org.slf4j.Logger;
@@ -41,6 +40,6 @@ public class ReceiverSyncArchiveController extends BaseRestController {
 			log.debug("Fetching archived events: ");
 		}
 		
-		return doSearchByPeriod(startDate, endDate, Constants.DATE_CREATED);
+		return doSearchByPeriod(startDate, endDate, ReceiverSyncArchive.DATE_CREATED);
 	}
 }
