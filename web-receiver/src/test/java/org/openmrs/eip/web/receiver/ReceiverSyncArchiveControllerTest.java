@@ -11,6 +11,7 @@ import java.util.Map;
 import org.junit.Test;
 import org.openmrs.eip.app.management.entity.receiver.ReceiverSyncArchive;
 import org.openmrs.eip.app.receiver.BaseReceiverTest;
+import org.openmrs.eip.component.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
@@ -28,39 +29,38 @@ public class ReceiverSyncArchiveControllerTest extends BaseReceiverTest {
 		assertEquals(2, result.size());
 		assertEquals(3, result.get("count"));
 		assertEquals(3, ((List) result.get("items")).size());
-		assertEquals("e2bc25aa-1d5f-11e0-b929-000c29ad1d07",
-		    ((List<ReceiverSyncArchive>) result.get("items")).get(0).getIdentifier());
-		assertEquals("4316548b-8803-43b7-bd10-49f26bc26dde",
-		    ((List<ReceiverSyncArchive>) result.get("items")).get(0).getMessageUuid());
-		
 	}
 	
 	@Test
 	public void shouldDoSearchByPeriod() {
+		// Do Search with startDate and EndDate
 		String stardDate = "2022-10-25";
 		String endDate = "2022-10-30";
 		
-		Map results = controller.doSearchByPeriod(stardDate, endDate);
+		Map results = controller.doSearchByPeriod(stardDate, endDate, Constants.DATE_CREATED);
 		assertEquals(1, results.get("count"));
+		assertEquals(2, results.size());
 		assertNotNull(((List<ReceiverSyncArchive>) results.get("items")).get(0).getDateCreated());
 		assertNotNull(((List<ReceiverSyncArchive>) results.get("items")).get(0).getDateReceived());
 		assertNotNull(((List<ReceiverSyncArchive>) results.get("items")).get(0).getDateSentBySender());
 		
+		// Do Search with EndDate
 		stardDate = "";
 		endDate = "2022-10-23";
 		
-		Map result = controller.doSearchByPeriod(stardDate, endDate);
+		Map result = controller.doSearchByPeriod(stardDate, endDate, Constants.DATE_CREATED);
 		assertEquals(1, results.get("count"));
-		assertEquals("e2bc25aa-1d5f-11e0-b929-000c29ad1d07",
+		assertEquals("8cd540b1-dbcc-4dc0-bb85-d5d2763bbw6e",
 		    ((List<ReceiverSyncArchive>) result.get("items")).get(0).getIdentifier());
 		assertNotNull(((List<ReceiverSyncArchive>) result.get("items")).get(0).getDateCreated());
 		assertNotNull(((List<ReceiverSyncArchive>) result.get("items")).get(0).getDateReceived());
 		assertNotNull(((List<ReceiverSyncArchive>) result.get("items")).get(0).getDateSentBySender());
 		
+		// Do Search with startDate
 		stardDate = "2022-10-30";
-		endDate = "2022-11-01";
+		endDate = "";
 		
-		Map res = controller.doSearchByPeriod(stardDate, endDate);
+		Map res = controller.doSearchByPeriod(stardDate, endDate, Constants.DATE_CREATED);
 		assertEquals(0, res.get("count"));
 		assertEquals(0, ((List) res.get("items")).size());
 		assertEquals(2, result.size());

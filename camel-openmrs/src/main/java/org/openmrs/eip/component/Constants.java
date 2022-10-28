@@ -42,6 +42,8 @@ public class Constants {
 	
 	public static final String EVENT_DATE = "eventDate";
 	
+	public static final String DATE_CREATED = "dateCreated";
+	
 	static {
 		List<String> subclassTables = new ArrayList();
 		subclassTables.add("patient");
