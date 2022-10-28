@@ -39,8 +39,8 @@ public class Constants {
 	public static final List<String> ORDER_SUBCLASS_TABLES = Arrays.asList("test_order", "drug_order");
 	
 	public static final List<String> SUBCLASS_TABLES;
-		
-		static {
+	
+	static {
 		List<String> subclassTables = new ArrayList();
 		subclassTables.add("patient");
 		subclassTables.addAll(ORDER_SUBCLASS_TABLES);
