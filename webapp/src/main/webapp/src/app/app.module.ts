@@ -7,6 +7,7 @@ import {StoreModule} from '@ngrx/store';
 import {StoreDevtoolsModule} from '@ngrx/store-devtools';
 import {environment} from '../environments/environment';
 import {SenderModule} from "./sender/sender.module";
+import { appPropertyReducer } from './state/app-property.reducer';
 
 @NgModule({
 	declarations: [
@@ -17,6 +18,7 @@ import {SenderModule} from "./sender/sender.module";
 		ReceiverModule,
 		SenderModule,
 		StoreModule.forRoot({}, {}),
+		StoreModule.forFeature('appPropertiesQueue', appPropertyReducer),
 		StoreDevtoolsModule.instrument({
 			maxAge: 25,
 			logOnly: environment.production
